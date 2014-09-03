@@ -13,7 +13,6 @@
 		});
 
 		FE.Renderer.set(FE.Settings.renderer);
-		FE.Renderer.render();
 	};
 
 	window.FE = FE;
