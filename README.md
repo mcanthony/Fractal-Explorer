@@ -2,19 +2,25 @@ Fractal-Explorer
 ================
 
 A JavaScript based fractal explorer with several features.  
+**Demo: http://elias-schuett.de/git/Fractal-Explorer/**  
 **License: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)**
 
-##### Fractals
-* Mandelbrot
-* Julia
-* Buddhabrot
+## Features  
 
-##### Renderer
-* Canvas (slow; double precision)
-* Worker (slow; double precision)
-* WebGL (fast; single precision)
+###### Implemented
 
-##### Features
-* Auto resolution
+* Smart fullscreen resolution
+* Render customizations
 * Image download
-* Share coordinates
+* Shareable URL
+
+###### Planned
+
+* Quadrupel precision emulation (Canvas)
+* Double precision emulation (WebGL)
+
+## Available Fractals
+
+* Mandelbrot
+* Buddhabrot
+* Julia
