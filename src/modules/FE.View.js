@@ -34,7 +34,7 @@
 
 		function zoom(x, y, dz) {
 
-			if (zoom.pending) { return; }
+			if (zoom.pending || FE.Settings.fractal == "Buddhabrot") { return; }
 			zoom.pending = true;
 
 			var S = FE.Settings;
@@ -70,6 +70,7 @@
 		/* ================== */
 
 		function drag(dx, dy) {
+			if (FE.Settings.fractal == "Buddhabrot") { return; }
 			$(FE.Renderer.canvas).css({ transform: "translate(" + dx + "px," + dy + "px)" });
 		}
 
@@ -79,6 +80,7 @@
 
 		function dragFinish() {
 
+			if (FE.Settings.fractal == "Buddhabrot") { return; }
 			var aspect = window.innerHeight / window.innerWidth;
 
 			FE.Settings.coordinates.x -= view.mouse.drag.x / window.innerWidth * FE.Settings.coordinates.z;
