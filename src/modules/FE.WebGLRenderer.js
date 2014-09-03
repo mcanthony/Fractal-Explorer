@@ -10,7 +10,7 @@
 
 			var req = new XMLHttpRequest();
 
-			req.open("GET","glsl/" + name + ".glsl?t="+new Date().getTime(),false);
+			req.open("GET","glsl/" + name + ".glsl",false);
 			req.send(0);
 
 			return req.responseText;
