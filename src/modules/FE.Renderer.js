@@ -20,7 +20,7 @@
 			document.getElementById(FE.Settings.renderer.toLowerCase()).className = "active";
 			window.addEventListener("resize", resize);
 			
-			set(FE.Settings.renderer);
+			set(FE.Settings.renderer, true);
 		}
 
 		/* ==================== */
@@ -58,7 +58,7 @@
 		/* ====== SET ====== */
 		/* ================= */
 
-		function set(which) {
+		function set(which, init) {
 
 			FE.Settings.renderer = which;
 			renderer = FE[which + "Renderer"];
@@ -70,7 +70,9 @@
 			canvas.css("display", "block").addClass("active");
 
 			FE.Renderer.canvas = canvas[0];
-			FE.Presets.load("None");
+
+			if (init) { FE.Presets.load("None"); }
+			else { render(); }
 		}
 
 		/* ==================== */
