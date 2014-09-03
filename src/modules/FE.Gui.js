@@ -54,10 +54,11 @@
 			d.view.add(FE.View,"download");
 
 			d.add(S,"renderer",["Canvas","WebGL"])[f](FE.Renderer.set);
-			d.add(S,"fractal",Object.keys(FE.Presets.presets))[f](function() { init(true); r(); });
+			d.add(S,"fractal",Object.keys(FE.Presets.presets))[f](function() { init(true); FE.Presets.load("None"); });
 			d.add(S,"preset",Object.keys(FE.Presets.presets[S.fractal])).onChange(FE.Presets.load);
 			d.add(S,"iterations",10,1000).step(1)[f](r);
 
+			d.add(FE.Gui,"github");
 			d.add(FE.Gui,"help");
 		}
 
@@ -134,10 +135,17 @@
 			].join("\n"));
 		}
 
+		/* ==================== */
+		/* ====== GITHUB ====== */
+		/* ==================== */
+
+		function github() { window.open("https://github.com/elias94xx/Fractal-Explorer", "_blank").focus(); }
+
 		return {
 			init: init,
 			update: update,
 			makeURL: makeURL,
+			github: github,
 			help: help
 		};
 

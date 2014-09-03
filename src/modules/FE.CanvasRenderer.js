@@ -124,12 +124,12 @@
 					while(r*r+i*i<2&&n--) {
 						r = r*r-i*i+_x*CZ+CX;
 						i = 2*t*i+_y+CY;t=r;
-						A[~~((r+2)/4*H)*W + ~~((i+2)/4*W)]++;
+						A[~~((r+2)/4*H)*W + ~~((i*H/W+2)/4*W)]++;
 					}
 				}
 			}
 
-			for(i = W*H-1; i--;) { t = i*4; d[t++] = A[i]/N*255; d[t++] = d[t++] = 0; d[t] = 255; }
+			for(i = W*H-1; i--;) { t = i*4; d[t++] = d[t++] = d[t++] = A[i]/N*127; d[t] = 255; }
 
 			ctx.putImageData(imageData,0,0);
 		}

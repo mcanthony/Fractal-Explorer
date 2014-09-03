@@ -70,8 +70,7 @@
 			canvas.css("display", "block").addClass("active");
 
 			FE.Renderer.canvas = canvas[0];
-
-			render();
+			FE.Presets.load("None");
 		}
 
 		/* ==================== */
