@@ -79,6 +79,7 @@
 			var imageData = ctx.createImageData(W,H),
 
 				d = imageData.data,
+				A = new Array(W*H).join("0").split(""),
 			    N = S.iterations,
 
 			    CX = S.coordinates.x,
@@ -98,15 +99,6 @@
 
 			    r,i,t,n,_x,_y,x,y;
 
-			var A = [];
-
-			for(y = 0; y < H; y++) {
-				A[y] = [];
-				for(x = 0; x < W; x++) {
-					A [y][x] = 0;
-				}
-			}
-
 			for(y = 0; y < H; y++) {
 
 				_y = (y/H-0.5)*CZ*H/W;
@@ -120,18 +112,12 @@
 					while(r*r+i*i<2&&n--) {
 						r = r*r-i*i+_x*CZ+CX;
 						i = 2*t*i+_y+CY;t=r;
-						(A[~~((r+2)/4*H)]||[])[~~((i+2)/4*W)]++;
+						A[~~((r+2)/4*H)*W + ~~((i+2)/4*W)]++;
 					}
 				}
 			}
 
-			for(y = 0; y < H; y++) {
-				for(x = 0; x < W; x++) {
-					i = (y*W+x)*4;
-					d[i] = d[i+1] = d[i+2] = A[y][x]/N*255;
-					d[i+3] = 255;
-				}
-			}
+			for(i = W*H-1; i--;) { t = i*4; d[t++] = d[t++] = d[t++] = A[i]/N*255; d[t] = 255; }
 
 			ctx.putImageData(imageData,0,0);
 		}
