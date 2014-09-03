@@ -117,7 +117,7 @@
 				}
 			}
 
-			for(i = W*H-1; i--;) { t = i*4; d[t++] = d[t++] = d[t++] = A[i]/N*255; d[t] = 255; }
+			for(i = W*H-1; i--;) { t = i*4; d[t++] = A[i]/N*255; d[t++] = d[t++] = 0; d[t] = 255; }
 
 			ctx.putImageData(imageData,0,0);
 		}
