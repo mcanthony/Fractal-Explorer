@@ -1,8 +1,8 @@
 Fractal-Explorer
 ================
 
-A JavaScript/WebGL based fractal explorer with several options and a decent performance in fullscreen mode.  
-License: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+A JavaScript based fractal explorer with several features.  
+**License: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)**
 
 ##### Fractals
 * Mandelbrot
