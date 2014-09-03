@@ -27,7 +27,7 @@
 
 			if (!p) { return; }
 
-			S.position = { x: p[0], y:p[1], z: p[2] };
+			S.coordinates = { x: p[0], y:p[1], z: p[2] };
 			S.iterations = p[3];
 			S.shading.scale = p[4];
 
