@@ -1,0 +1,31 @@
+{
+  "name": "Fractal-Explorer",
+  "version": "0.0.1",
+  "description": "A JavaScript/WebGL based fractal explorer with several options and a decent performance in fullscreen mode.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/elias94xx/Fractal-Explorer.git"
+  },
+  "keywords": [
+    "javascript",
+    "webgl",
+    "fractal",
+    "mandelbrot",
+    "julia",
+    "buddhabrot",
+    "explorer",
+    "html5"
+  ],
+  "author": "Elias Schütt",
+  "license": "CC-BY-NC-SA 4.0",
+  "bugs": {
+    "url": "https://github.com/elias94xx/Fractal-Explorer/issues"
+  },
+  "homepage": "http://elias94xx.github.io/Fractal-Explorer/",
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-jshint": "~0.8.0",
+    "grunt-contrib-uglify": "~0.5.1",
+    "grunt-contrib-concat": "~0.3.0"
+  }
+}
