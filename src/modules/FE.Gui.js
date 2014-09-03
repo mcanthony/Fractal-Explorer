@@ -6,14 +6,13 @@
 
 		var datGUI;
 
+		/* ================== */
+		/* ====== INIT ====== */
+		/* ================== */
+
 		function init(reset) {
 
-			if (reset) {
-				datGUI.destroy();
-			} else {
-				readURL();
-			}
-
+			reset ? datGUI.destroy() : readURL();
 			datGUI = new dat.GUI();
 
 			var S = FE.Settings;
@@ -62,6 +61,10 @@
 			d.add(FE.Gui,"help");
 		}
 
+		/* ==================== */
+		/* ====== UPDATE ====== */
+		/* ==================== */
+
 		function update() {
 
 			datGUI.__controllers.forEach(function(controller) {
@@ -70,6 +73,10 @@
 
 			updateFolders(datGUI);
 		}
+
+		/* ============================ */
+		/* ====== UPDATE_FOLDERS ====== */
+		/* ============================ */
 
 		function updateFolders(d) {
 			Object.keys(d.__folders).forEach(function(folder) {
@@ -82,6 +89,10 @@
 				if (Object.keys(folder.__folders).length) { updateFolders(folder); }
 			});
 		}
+
+		/* ====================== */
+		/* ====== READ_URL ====== */
+		/* ====================== */
 
 		function readURL() {
 
@@ -97,19 +108,27 @@
 			return fail;
 		}
 
+		/* ====================== */
+		/* ====== MAKE_URL ====== */
+		/* ====================== */
+
 		function makeURL() {
 			var hash = btoa(JSON.stringify(FE.Settings));
 			var url = window.location.protocol + '//' + window.location.host + window.location.pathname;
 			window.history.replaceState(null, document.title, url + "#" + hash);
 		}
 
+		/* ================== */
+		/* ====== HELP ====== */
+		/* ================== */
+
 		function help() {
 			alert([
 				"Controls",
 				"- Drag to move around",
 				"- Mousewheel to zoom",
-				"- CTRL + Move to alter Julia fractal",
-				"renderer",
+				"- CTRL + Move to alter Julia fractal\n",
+				"Renderer",
 				"- Canvas (higher precision but slower)",
 				"- WebGL (smaller precision but faster)"
 			].join("\n"));
@@ -118,7 +137,6 @@
 		return {
 			init: init,
 			update: update,
-			readURL: readURL,
 			makeURL: makeURL,
 			help: help
 		};

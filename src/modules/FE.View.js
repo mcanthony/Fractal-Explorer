@@ -4,26 +4,33 @@
 
 	FE.View = (function() {
 
-		var instance = {
+		var view = {
 			mouse: {
 				pos: { x: 0, y: 0 },
 				drag: { x: 0, y: 0 }
 			}
 		};
 
-		var $container;
+		/* ================== */
+		/* ====== INIT ====== */
+		/* ================== */
 
 		function init() {
 
-			$container = document.getElementById("container");
-			$container.addEventListener("mousedown", mousedown);
-			$container.addEventListener("mousemove", mousemove);
-			$container.addEventListener("mouseup", mouseup);
-			$container.oncontextmenu=function(){return false};
+			$("#container")
+			.on("mousedown", mousedown)
+			.on("mousemove", mousemove)
+			.on("mouseup", mouseup)
+			.on("contextmenu", function(){ return false });
 
-			document.body.addEventListener("keyup", keyup);
-			$(document.body).on("mousewheel", scroll);
+			$(document.body)
+			.on("keyup", keyup)
+			.on("mousewheel", scroll);
 		}
+
+		/* ================== */
+		/* ====== ZOOM ====== */
+		/* ================== */
 
 		function zoom(x, y, dz) {
 
@@ -40,6 +47,9 @@
 			if (dz == 0.5) {
 				S.coordinates.x += (x/W-0.5)*S.coordinates.z;
 				S.coordinates.y += (y/H-0.5)*S.coordinates.z;
+			} else {
+				x = W/2;
+				y = H/2;
 			}
 
 			$(FE.Renderer.canvas).transition({
@@ -55,78 +65,84 @@
 			});
 		}
 
-		function scroll(e) {
-			zoom(
-				instance.mouse.pos.x,
-				instance.mouse.pos.y,
-				e.originalEvent.deltaY < 0 ? 0.5 : 2.0
-			);
-		}
+		/* ================== */
+		/* ====== DRAG ====== */
+		/* ================== */
 
 		function drag(dx, dy) {
 			$(FE.Renderer.canvas).css({ transform: "translate(" + dx + "px," + dy + "px)" });
 		}
 
+		/* ========================= */
+		/* ====== DRAG_FINISH ====== */
+		/* ========================= */
+
 		function dragFinish() {
 
 			var aspect = window.innerHeight / window.innerWidth;
 
-			FE.Settings.coordinates.x -= instance.mouse.drag.x / window.innerWidth * FE.Settings.coordinates.z;
-			FE.Settings.coordinates.y -= instance.mouse.drag.y / window.innerHeight * FE.Settings.coordinates.z * aspect;
+			FE.Settings.coordinates.x -= view.mouse.drag.x / window.innerWidth * FE.Settings.coordinates.z;
+			FE.Settings.coordinates.y -= view.mouse.drag.y / window.innerHeight * FE.Settings.coordinates.z * aspect;
 			
-			if (instance.mouse.drag.x || instance.mouse.drag.y) { FE.Renderer.render(); }
+			if (view.mouse.drag.x || view.mouse.drag.y) {
+				FE.Renderer.render();
+				$(FE.Renderer.canvas).css({ transform: "translate(0px,0px)" });
+			}
 
-			$(FE.Renderer.canvas).css({ transform: "translate(0px,0px)" });
-			delete instance.mouse.dragStart;
+			delete view.mouse.dragStart;
 		}
+
+		/* ======================= */
+		/* ====== MOUSEDOWN ====== */
+		/* ======================= */
 
 		function mousedown(e) {
 
+			view.mouse.down = e.which;
+			view.mouse.drag = { x: 0, y: 0 };
+			view.mouse.dragStart = { x: e.pageX, y: e.pageY };
+			
 			e.preventDefault();
-
-			instance.mouse.down = e.which;
-			instance.mouse.drag = { x: 0, y: 0 };
-			instance.mouse.dragStart = { x: e.pageX, y: e.pageY };
 		}
+
+		/* ======================= */
+		/* ====== MOUSEMOVE ====== */
+		/* ======================= */
 
 		function mousemove(e) {
 
-			instance.mouse.pos = {
-				x: e.pageX,
-				y: e.pageY
-			};
+			view.mouse.pos = { x: e.pageX, y: e.pageY };
 
 			if (e.ctrlKey) {
-				instance.alteredPosition = true;
 				FE.Settings.position.x = (e.pageX / window.innerWidth - 0.5) * 2;
 				FE.Settings.position.y = (e.pageY / window.innerHeight - 0.5) * 2;
-				FE.Renderer.render({ preview: true });
+				return FE.Renderer.render({ preview: true });
 			}
 
-			if (instance.mouse.dragStart) {
+			if (view.mouse.dragStart) {
 
-				instance.mouse.drag = {
-					x: e.pageX - instance.mouse.dragStart.x,
-					y: e.pageY - instance.mouse.dragStart.y
+				view.mouse.drag = {
+					x: e.pageX - view.mouse.dragStart.x,
+					y: e.pageY - view.mouse.dragStart.y
 				};
 
-				drag(instance.mouse.drag.x, instance.mouse.drag.y);
+				drag(view.mouse.drag.x, view.mouse.drag.y);
 			}
 		}
 
-		function mouseup(e) {
-			if (instance.mouse && instance.mouse.drag) { dragFinish(); }
-		}
-
-		function keyup(e) {
-			if (e.keyCode == 17) { FE.Renderer.render(); }
-		}
+		/* =================== */
+		/* ====== RESET ====== */
+		/* =================== */
 
 		function reset() {
 			FE.Settings.coordinates = { x: 0, y: 0, z: 4 };
 			FE.Gui.update();
 			FE.Renderer.render();
 		}
+
+		/* ====================== */
+		/* ====== DOWNLOAD ====== */
+		/* ====================== */
 
 		function download() {
 
@@ -140,6 +156,14 @@
 			document.body.appendChild(a);
 			a.click(); a.remove();
 		}
+
+		/* ==================== */
+		/* ====== EVENTS ====== */
+		/* ==================== */
+
+		function mouseup(e) { view.mouse && view.mouse.drag && dragFinish(); }
+		function keyup(e) { e.keyCode == 17 && FE.Renderer.render(); }
+		function scroll(e) { zoom(view.mouse.pos.x, view.mouse.pos.y, e.originalEvent.deltaY < 0 ? 0.5 : 2.0); }
 
 		return {
 			init: init,

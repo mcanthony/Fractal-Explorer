@@ -6,9 +6,17 @@
 
 		var ctx;
 
+		/* ================== */
+		/* ====== INIT ====== */
+		/* ================== */
+
 		function init() {
 			ctx = document.getElementById("canvas").getContext("2d");
 		}
+
+		/* =============================== */
+		/* ====== RENDER_MANDELBROT ====== */
+		/* =============================== */
 
 		function renderMandelbrot() {
 
@@ -70,6 +78,10 @@
 			ctx.putImageData(imageData,0,0);
 		}
 
+		/* =============================== */
+		/* ====== RENDER_BUDDHABROT ====== */
+		/* =============================== */
+
 		function renderBuddhabrot() {
 
 			var S = FE.Settings;
@@ -121,6 +133,10 @@
 
 			ctx.putImageData(imageData,0,0);
 		}
+
+		/* ========================== */
+		/* ====== RENDER_JULIA ====== */
+		/* ========================== */
 
 		function renderJulia() {
 

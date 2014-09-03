@@ -8,47 +8,24 @@
 		var $canvas;
 		var $webgl;
 
+		/* ================== */
+		/* ====== INIT ====== */
+		/* ================== */
+
 		function init() {
 
-			renderer = FE[FE.Settings + "Renderer"];
 			$canvas = document.getElementById("canvas");
 			$webgl = document.getElementById("webgl");
 
 			document.getElementById(FE.Settings.renderer.toLowerCase()).className = "active";
 			window.addEventListener("resize", resize);
+			
+			set(FE.Settings.renderer);
 		}
 
-		function resize() {
-
-			if (resize.init) { return; }
-
-			resize.init = true;
-			resize.interval = window.setInterval(function() {
-				
-				var newSize = window.innerWidth+window.innerHeight
-				
-				if (resize.oldSize == newSize) {
-					window.clearInterval(resize.interval);
-					resize.init = false;
-					resizeFinish();
-				}
-
-				resize.oldSize = newSize;
-			}, 200);
-		}
-
-		function resizeFinish() {
-
-			var canvas = document.querySelector("canvas.active");
-
-			canvas.width = ~~(window.innerWidth * FE.Settings.resolution._factor);
-			canvas.height = ~~(window.innerHeight * FE.Settings.resolution._factor);
-
-			if (FE.Settings.renderer == "WebGL")
-			{ FE.WebGLRenderer.getContext().viewport(0, 0, window.innerWidth, window.innerHeight); }
-
-			render();
-		}
+		/* ==================== */
+		/* ====== RENDER ====== */
+		/* ==================== */
 
 		function render(opts) {
 
@@ -77,6 +54,10 @@
 			} else { render.init = false; }
 		}
 
+		/* ================= */
+		/* ====== SET ====== */
+		/* ================= */
+
 		function set(which) {
 
 			FE.Settings.renderer = which;
@@ -89,6 +70,46 @@
 			canvas.css("display", "block").addClass("active");
 
 			FE.Renderer.canvas = canvas[0];
+
+			render();
+		}
+
+		/* ==================== */
+		/* ====== RESIZE ====== */
+		/* ==================== */
+
+		function resize() {
+
+			if (resize.init) { return; }
+
+			resize.init = true;
+			resize.interval = window.setInterval(function() {
+				
+				var newSize = window.innerWidth+window.innerHeight
+				
+				if (resize.oldSize == newSize) {
+					window.clearInterval(resize.interval);
+					resize.init = false;
+					resizeFinish();
+				}
+
+				resize.oldSize = newSize;
+			}, 200);
+		}
+
+		/* =========================== */
+		/* ====== RESIZE_FINISH ====== */
+		/* =========================== */
+
+		function resizeFinish() {
+
+			var canvas = document.querySelector("canvas.active");
+
+			canvas.width = ~~(window.innerWidth * FE.Settings.resolution._factor);
+			canvas.height = ~~(window.innerHeight * FE.Settings.resolution._factor);
+
+			if (FE.Settings.renderer == "WebGL")
+			{ FE.WebGLRenderer.getContext().viewport(0, 0, window.innerWidth, window.innerHeight); }
 
 			render();
 		}

@@ -6,6 +6,34 @@
 
 		var gl, instance = {};
 
+		/* ================== */
+		/* ====== INIT ====== */
+		/* ================== */
+
+		function init() {
+
+			var canvas = document.getElementById("webgl");
+			var contextIds = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
+			var attributes = { alpha: false, depth: false, antialias: false, stencil: false, premultipliedAlpha: false, preserveDrawingBuffer: true };
+
+			contextIds.some(function(v) {
+				try { gl = canvas.getContext(v, attributes); } catch(e){}
+				if (gl) { return true; }
+			});
+
+			instance.programs = {
+				Mandelbrot: createProgram("mandelbrot"),
+				Buddhabrot: createProgram("buddhabrot"),
+				Julia: createProgram("julia")
+			};
+
+			gl.viewport(0, 0, window.innerWidth, window.innerHeight);
+		}
+
+		/* ======================== */
+		/* ====== GET_SHADER ====== */
+		/* ======================== */
+
 		function getShader(name) {
 
 			var req = new XMLHttpRequest();
@@ -15,6 +43,10 @@
 
 			return req.responseText;
 		}
+
+		/* ============================ */
+		/* ====== CREATE_PROGRAM ====== */
+		/* ============================ */
 
 		function createProgram(fractal) {
 
@@ -56,25 +88,9 @@
 			return pr;
 		}
 
-		function init() {
-
-			var canvas = document.getElementById("webgl");
-			var contextIds = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
-			var attributes = { alpha: false, depth: false, antialias: false, stencil: false, premultipliedAlpha: false, preserveDrawingBuffer: true };
-
-			contextIds.some(function(v) {
-				try { gl = canvas.getContext(v, attributes); } catch(e){}
-				if (gl) { return true; }
-			});
-
-			instance.programs = {
-				Mandelbrot: createProgram("mandelbrot"),
-				Buddhabrot: createProgram("buddhabrot"),
-				Julia: createProgram("julia")
-			};
-
-			gl.viewport(0, 0, window.innerWidth, window.innerHeight);
-		}
+		/* ==================== */
+		/* ====== RENDER ====== */
+		/* ==================== */
 
 		function render() {
 
@@ -98,20 +114,36 @@
 			gl.drawArrays(gl.TRIANGLES, 0, 6);
 		}
 
+		/* =============================== */
+		/* ====== RENDER_MANDELBROT ====== */
+		/* =============================== */
+
 		function renderMandelbrot() {
 			gl.useProgram(instance.programs.Mandelbrot);
 			render();
 		}
+
+		/* =============================== */
+		/* ====== RENDER_BUDDHABROT ====== */
+		/* =============================== */
 
 		function renderBuddhabrot() {
 			gl.useProgram(instance.programs.Buddhabrot);
 			render();
 		}
 
+		/* ========================== */
+		/* ====== RENDER_JULIA ====== */
+		/* ========================== */
+
 		function renderJulia() {
 			gl.useProgram(instance.programs.Julia);
 			render();
 		}
+
+		/* ========================= */
+		/* ====== GET_CONTEXT ====== */
+		/* ========================= */
 
 		function getContext() {
 			return gl;
