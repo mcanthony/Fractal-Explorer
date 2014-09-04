@@ -44,13 +44,13 @@
 
 			d.view = d.addFolder("View");
 			d.view.coordinates = d.view.addFolder("Coordinates");
-			d.view.coordinates.add(S.coordinates,"x",-2.0,2.0).step(0.01)[f](r);
-			d.view.coordinates.add(S.coordinates,"y",-2.0,2.0).step(0.01)[f](r);
-			d.view.coordinates.add(S.coordinates,"z", 4.0,0.0).step(0.01)[f](r);
+			d.view.coordinates.add(S.coordinates,"x",-2,2).step(0.01)[f](r);
+			d.view.coordinates.add(S.coordinates,"y",-2,2).step(0.01)[f](r);
+			d.view.coordinates.add(S.coordinates,"z", 4,0).step(0.01)[f](r);
 
 			d.view.position = d.view.addFolder("Position");
-			d.view.position.add(S.position,"x",-2.0,2.0).step(0.01)[f](r);
-			d.view.position.add(S.position,"y",-2.0,2.0).step(0.01)[f](r);
+			d.view.position.add(S.position,"x",-2,2).step(0.01)[f](r);
+			d.view.position.add(S.position,"y",-2,2).step(0.01)[f](r);
 
 			d.view.add(FE.View,"reset");
 			d.view.add(FE.View,"share");
@@ -82,7 +82,9 @@
 		/* ============================ */
 
 		function updateFolders(d) {
+
 			Object.keys(d.__folders).forEach(function(folder) {
+
 				folder = d.__folders[folder];
 
 				folder.__controllers.forEach(function(controller) {

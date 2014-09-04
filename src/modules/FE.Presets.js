@@ -33,7 +33,10 @@
 
 			if (!p) { return; }
 
-			S.coordinates = { x: p[0], y:p[1], z: p[2] };
+			S.coordinates.x = p[0]
+			S.coordinates.y = p[1];
+			S.coordinates.z = p[2];
+			
 			S.resolution.iterations = p[3];
 			S.shading.scale = p[4];
 
