@@ -2,7 +2,7 @@ precision mediump float;
 
 uniform vec2 uResolution;
 uniform vec3 uCoordinates;
-uniform vec3 uPosition;
+uniform vec2 uPosition;
 uniform vec3 uColorScale;
 uniform vec3 uColorShift;
 uniform float uShadingScale;
