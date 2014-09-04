@@ -117,7 +117,7 @@
 				}
 
 				resize.oldSize = newSize;
-			}, 500);
+			}, 100);
 		}
 
 		return {

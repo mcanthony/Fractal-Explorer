@@ -14,11 +14,11 @@
 			},
 
 			Buddhabrot: {
-				"None": [0,0,4,50,0.3]
+				"None": [0,0,4,100,0.3]
 			},
 
 			AntiBuddhabrot: {
-				"None": [0,0,4,50,0.3]
+				"None": [0,0,4,100,0.3]
 			},
 			
 			Julia: {

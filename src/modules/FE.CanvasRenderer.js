@@ -93,6 +93,7 @@
 				d = imageData.data,
 				A = [],
 			    N = S.resolution.iterations,
+			    R = S.resolution._factor,
 
 			    CX = S.coordinates.x,
 			    CY = S.coordinates.y,
@@ -119,6 +120,8 @@
 
 					_x = (x/W-0.5)*CZ;
 
+					if (_x*_x+_y*_y>2) { continue; }
+
 					r=i=t=0;n=N;
 
 					while(r*r+i*i<2&&n--) {
@@ -126,11 +129,11 @@
 						i = 2*t*i+_y;t=r;
 					}
 
-					r*r+i*i>2 && A.push([_x,_y]);
+					n<(N-N/2)&&r*r+i*i>2 && A.push([_x,_y]);
 				}
 			}
 
-			l = (W+H*H/W)/100;
+			l = 1/Math.log(W*H*H/W+N)*2000;
 
 			for(k=A.length;k--;) {
 
@@ -164,6 +167,7 @@
 			var imageData = ctx.createImageData(W,H),
 
 				d = imageData.data,
+				A = [],
 			    N = S.resolution.iterations,
 
 			    CX = S.coordinates.x,
@@ -181,9 +185,7 @@
 			    SDS = S.shading.scale,
 			    STH = S.shading.smooth,
 
-			    r,i,j,l,t,n,_x,_y,x,y;
-
-			l = (W+H*H/W)/300;
+			    r,i,j,k,l,t,n,_x,_y,x,y;
 
 			for(y = 0; y < H; y++) {
 
@@ -193,16 +195,34 @@
 
 					_x = (x/W-0.5)*CZ;
 
+					if (_x*_x+_y*_y>2) { continue; }
+
 					r=i=t=0;n=N;
 
 					while(r*r+i*i<2&&n--) {
-
-						j=(~~((r+2)/4*H+0.5)*W+~~((i*H/W+2)/4*W+0.5))*4;
-						d[j]=d[j+1]=d[j+2]=d[j+2]+l;d[j+3]=255;
-
 						r = r*r-i*i+_x;
 						i = 2*t*i+_y;t=r;
 					}
+
+					r*r+i*i<2 && A.push([_x,_y]);
+				}
+			}
+
+			l = 1/Math.log(W*H*H/W+N)*255;
+
+			for(k=A.length;k--;) {
+
+				x = A[k][0];
+				y = A[k][1];
+				r=i=t=0;n=N;
+
+				while(r*r+i*i<2&&n--) {
+
+					j=(~~((r+2)/4*H+0.5)*W+~~((i*H/W+2)/4*W+0.5))*4;
+					d[j]=d[j+1]=d[j+2]=d[j+2]+l;d[j+3]=255;
+
+					r = r*r-i*i+x;
+					i = 2*t*i+y;t=r;
 				}
 			}
 
