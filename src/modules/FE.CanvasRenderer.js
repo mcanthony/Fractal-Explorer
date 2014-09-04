@@ -109,7 +109,7 @@
 			    SDS = S.shading.scale,
 			    STH = S.shading.smooth,
 
-			    r,i,t,n,_x,_y,x,y;
+			    r,i,j,t,n,_x,_y,x,y;
 
 			for(y = 0; y < H; y++) {
 
@@ -122,14 +122,15 @@
 					r=i=t=0;n=N;
 
 					while(r*r+i*i<2&&n--) {
+
+						j = (~~((r+2)/4*H+0.5)*W + ~~((i*H/W+2)/4*W+0.5))*4;
+						d[j++]=d[j++]=d[j+1]=++d[j++];d[j]=255;
+
 						r = r*r-i*i+_x*CZ+CX;
 						i = 2*t*i+_y+CY;t=r;
-						A[~~((r+2)/4*H)*W + ~~((i*H/W+2)/4*W)]++;
 					}
 				}
 			}
-
-			for(i = W*H-1; i--;) { t = i*4; d[t++] = d[t++] = d[t++] = A[i]/N*127; d[t] = 255; }
 
 			ctx.putImageData(imageData,0,0);
 		}

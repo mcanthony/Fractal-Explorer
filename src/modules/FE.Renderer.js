@@ -33,7 +33,7 @@
 
 			var S = FE.Settings;
 
-			if (!render.init && !FE.Renderer.pending || S.fractal == "Buddhabrot") {
+			if (!render.init && !FE.Renderer.pending) {
 
 				S.resolution._factor = S.resolution.factor/S.resolution.steps;
 				render.init = true;
@@ -53,7 +53,7 @@
 				return FE.View.zoom.apply(FE.View.zoom, args);
 			}
 
-			if (S.resolution._factor < S.resolution.factor && !opts.preview && S.fractal != "Buddhabrot") {
+			if (S.resolution._factor < S.resolution.factor && !opts.preview) {
 
 				S.resolution._factor = Math.min(S.resolution.factor, S.resolution._factor + S.resolution.factor/S.resolution.steps);
 				window.setTimeout(render,1);
