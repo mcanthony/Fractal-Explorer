@@ -34,7 +34,7 @@
 
 		function zoom(x, y, dz) {
 
-			if (FE.Settings.fractal == "Buddhabrot") { return; }
+			if (FE.Settings.fractal.indexOf("Buddhabrot") != -1) { return; }
 			if (zoom.pending || FE.Renderer.pending) { FE.View.requestZoom = [x,y,dz]; return; }
 
 			zoom.pending = true;
@@ -73,7 +73,7 @@
 
 		function drag(dx, dy) {
 
-			if (FE.Settings.fractal == "Buddhabrot") { return; }
+			if (FE.Settings.fractal.indexOf("Buddhabrot") != -1) { return; }
 
 			if (!FE.Settings.resolution.renderOnDrag) {
 				$(FE.Renderer.canvas).css({ transform: "translate(" + dx + "px," + dy + "px)" });
@@ -94,7 +94,7 @@
 
 		function dragFinish() {
 
-			if (FE.Settings.fractal == "Buddhabrot") { return; }
+			if (FE.Settings.fractal.indexOf("Buddhabrot") != -1) { return; }
 
 			if (!FE.Settings.resolution.renderOnDrag) {
 
