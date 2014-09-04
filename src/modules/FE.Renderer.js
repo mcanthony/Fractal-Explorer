@@ -53,7 +53,7 @@
 				return FE.View.zoom.apply(FE.View.zoom, args);
 			}
 
-			if (S.resolution._factor < S.resolution.factor && !opts.preview) {
+			if (S.resolution._factor < S.resolution.factor && !opts.preview && !FE.View.requestDrag) {
 
 				S.resolution._factor = Math.min(S.resolution.factor, S.resolution._factor + S.resolution.factor/S.resolution.steps);
 				window.setTimeout(render,1);

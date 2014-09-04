@@ -75,6 +75,8 @@
 
 			if (FE.Settings.fractal.indexOf("Buddhabrot") != -1) { return; }
 
+			FE.View.requestDrag = true;
+
 			if (!FE.Settings.resolution.renderOnDrag) {
 				$(FE.Renderer.canvas).css({ transform: "translate(" + dx + "px," + dy + "px)" });
 				return;
@@ -103,6 +105,8 @@
 				FE.Settings.coordinates.y -= view.mouse.drag.y / window.innerHeight * FE.Settings.coordinates.z * aspect;
 			}
 
+			FE.View.requestDrag = false;
+			
 			if (view.mouse.drag.x || view.mouse.drag.y) {
 				FE.Renderer.render();
 				$(FE.Renderer.canvas).css("transform","none");
