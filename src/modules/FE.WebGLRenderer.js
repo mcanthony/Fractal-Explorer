@@ -135,6 +135,16 @@
 			render();
 		}
 
+		/* ==================================== */
+		/* ====== RENDER_ANTI_BUDDHABROT ====== */
+		/* ==================================== */
+
+		function renderAntiBuddhabrot() {
+			alert("WebGL renderer not yet available for buddhabrot");
+			gl.useProgram(instance.programs.Buddhabrot);
+			render();
+		}
+
 		/* ========================== */
 		/* ====== RENDER_JULIA ====== */
 		/* ========================== */
@@ -156,6 +166,7 @@
 			init: init,
 			renderMandelbrot: renderMandelbrot,
 			renderBuddhabrot: renderBuddhabrot,
+			renderAntiBuddhabrot: renderAntiBuddhabrot,
 			renderJulia: renderJulia,
 			getContext: getContext
 		}

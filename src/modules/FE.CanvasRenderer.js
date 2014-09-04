@@ -48,17 +48,17 @@
 
 			for(var y = 0; y < H; y++) {
 
-				_y = (y/H-0.5)*CZ*H/W;
+				_y = (y/H-0.5)*CZ*H/W+CY;
 
 				for(var x = 0; x < W; x++) {
 
-					_x = (x/W-0.5);
+					_x = (x/W-0.5)*CZ+CX;
 
 					r=i=t=0;n=N;
 
 					while(r*r+i*i<128&&n--) {
-						r = r*r-i*i+_x*CZ+CX;
-						i = 2*t*i+_y+CY;t=r;
+						r = r*r-i*i+_x;
+						i = 2*t*i+_y;t=r;
 					}
 					
 					if (STH)
@@ -91,7 +91,7 @@
 			var imageData = ctx.createImageData(W,H),
 
 				d = imageData.data,
-				A = new Array(W*H).join("0").split(""),
+				A = [],
 			    N = S.resolution.iterations,
 
 			    CX = S.coordinates.x,
@@ -109,25 +109,99 @@
 			    SDS = S.shading.scale,
 			    STH = S.shading.smooth,
 
-			    r,i,j,t,n,_x,_y,x,y;
+			    r,i,j,k,l,t,n,_x,_y,x,y;
 
 			for(y = 0; y < H; y++) {
 
-				_y = (y/H-0.5)*CZ*H/W;
+				_y = (y/H-0.5)*CZ;
 
 				for(x = 0; x < W; x++) {
 
-					_x = (x/W-0.5);
+					_x = (x/W-0.5)*CZ;
+
+					r=i=t=0;n=N;
+
+					while(r*r+i*i<2&&n--) {
+						r = r*r-i*i+_x;
+						i = 2*t*i+_y;t=r;
+					}
+
+					r*r+i*i>2 && A.push([_x,_y]);
+				}
+			}
+
+			l = (W+H*H/W)/100;
+
+			for(k=A.length;k--;) {
+
+				x = A[k][0];
+				y = A[k][1];
+				r=i=t=0;n=N;
+
+				while(r*r+i*i<2&&n--) {
+
+					j=(~~((r+2)/4*H+0.5)*W+~~((i*H/W+2)/4*W+0.5))*4;
+					d[j]=d[j+1]=d[j+2]=d[j+2]+l;d[j+3]=255;
+
+					r = r*r-i*i+x;
+					i = 2*t*i+y;t=r;
+				}
+			}
+
+			ctx.putImageData(imageData,0,0);
+		}
+
+		/* ==================================== */
+		/* ====== RENDER_ANTI_BUDDHABROT ====== */
+		/* ==================================== */
+
+		function renderAntiBuddhabrot() {
+
+			var S = FE.Settings;
+			var W = ~~(ctx.canvas.width = window.innerWidth * S.resolution._factor);
+			var H = ~~(ctx.canvas.height = window.innerHeight * S.resolution._factor);
+
+			var imageData = ctx.createImageData(W,H),
+
+				d = imageData.data,
+			    N = S.resolution.iterations,
+
+			    CX = S.coordinates.x,
+			    CY = S.coordinates.y,
+			    CZ = S.coordinates.z,
+
+			    RSC = S.shading.color.scale.r,
+			    GSC = S.shading.color.scale.g,
+			    BSC = S.shading.color.scale.b,
+
+			    RSH = S.shading.color.shift.r,
+			    GSH = S.shading.color.shift.g,
+			    BSH = S.shading.color.shift.b,
+
+			    SDS = S.shading.scale,
+			    STH = S.shading.smooth,
+
+			    r,i,j,l,t,n,_x,_y,x,y;
+
+			l = (W+H*H/W)/300;
+
+			for(y = 0; y < H; y++) {
+
+				_y = (y/H-0.5)*CZ;
+
+				for(x = 0; x < W; x++) {
+
+					_x = (x/W-0.5)*CZ;
 
 					r=i=t=0;n=N;
 
 					while(r*r+i*i<2&&n--) {
 
 						j=(~~((r+2)/4*H+0.5)*W+~~((i*H/W+2)/4*W+0.5))*4;
-						d[j++]=d[j++]=d[j+1]=++d[j++];d[j]=255;
+						d[j]=d[j+1]=d[j+2]=d[j+2]+l;d[j+3]=255;
 
-						r = r*r-i*i+_x*CZ+CX;
-						i = 2*t*i+_y+CY;t=r;
+						r = r*r-i*i+_x;
+						i = 2*t*i+_y;t=r;
 					}
 				}
 			}
@@ -206,6 +280,7 @@
 			init: init,
 			renderMandelbrot: renderMandelbrot,
 			renderBuddhabrot: renderBuddhabrot,
+			renderAntiBuddhabrot: renderAntiBuddhabrot,
 			renderJulia: renderJulia,
 		}
 
