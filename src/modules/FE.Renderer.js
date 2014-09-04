@@ -32,6 +32,12 @@
 			opts = opts || {};
 
 			var S = FE.Settings;
+			var render_fn = renderer["render" + FE.Settings.fractal];
+
+			if (!render_fn) {
+				alert(S.renderer + " renderer not yet available for " + S.fractal);
+				return;
+			}
 
 			if (!render.init && !FE.Renderer.pending) {
 
@@ -42,7 +48,7 @@
 			}
 
 			FE.Renderer.pending = true;
-			renderer["render" + FE.Settings.fractal]();
+			render_fn();
 			FE.Renderer.pending = false;
 
 			if (FE.View.requestZoom) {

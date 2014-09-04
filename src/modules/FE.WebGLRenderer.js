@@ -25,7 +25,6 @@
 
 			instance.programs = {
 				Mandelbrot: createProgram("mandelbrot"),
-				Buddhabrot: createProgram("buddhabrot"),
 				Julia: createProgram("julia")
 			};
 
@@ -130,7 +129,6 @@
 		/* =============================== */
 
 		function renderBuddhabrot() {
-			alert("WebGL renderer not yet available for buddhabrot");
 			gl.useProgram(instance.programs.Buddhabrot);
 			render();
 		}
@@ -140,7 +138,6 @@
 		/* ==================================== */
 
 		function renderAntiBuddhabrot() {
-			alert("WebGL renderer not yet available for buddhabrot");
 			gl.useProgram(instance.programs.Buddhabrot);
 			render();
 		}
@@ -165,8 +162,6 @@
 		return {
 			init: init,
 			renderMandelbrot: renderMandelbrot,
-			renderBuddhabrot: renderBuddhabrot,
-			renderAntiBuddhabrot: renderAntiBuddhabrot,
 			renderJulia: renderJulia,
 			getContext: getContext
 		}
