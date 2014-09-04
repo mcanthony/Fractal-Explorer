@@ -51,6 +51,7 @@
 			d.view.position.add(S.position,"y",-2.0,2.0).step(0.01)[f](r);
 
 			d.view.add(FE.View,"reset");
+			d.view.add(FE.View,"share");
 			d.view.add(FE.View,"download");
 
 			d.add(S,"renderer",["Canvas","WebGL"])[f](FE.Renderer.set);
@@ -109,16 +110,6 @@
 			return fail;
 		}
 
-		/* ====================== */
-		/* ====== MAKE_URL ====== */
-		/* ====================== */
-
-		function makeURL() {
-			var hash = btoa(JSON.stringify(FE.Settings));
-			var url = window.location.protocol + '//' + window.location.host + window.location.pathname;
-			window.history.replaceState(null, document.title, url + "#" + hash);
-		}
-
 		/* ================== */
 		/* ====== HELP ====== */
 		/* ================== */
@@ -144,7 +135,6 @@
 		return {
 			init: init,
 			update: update,
-			makeURL: makeURL,
 			github: github,
 			help: help
 		};

@@ -33,18 +33,27 @@
 
 			var S = FE.Settings;
 
-			if (!render.init || S.fractal == "Buddhabrot") {
+			if (!render.init && !FE.Renderer.pending || S.fractal == "Buddhabrot") {
 
 				S.resolution._factor = S.resolution.factor/S.resolution.steps;
 				render.init = true;
 
 				if (!opts.preview) {
-					FE.Gui.makeURL();
 					FE.Gui.update();
 				}
 			}
 
+			FE.Renderer.pending = true;
 			renderer["render" + FE.Settings.fractal]();
+			FE.Renderer.pending = false;
+
+			if (FE.View.requestZoom) {
+				var args = FE.View.requestZoom;
+				renderer.init = false;
+
+				delete FE.View.requestZoom;
+				return FE.View.zoom.apply(FE.View.zoom, args);
+			}
 
 			if (S.resolution._factor < S.resolution.factor && !opts.preview && S.fractal != "Buddhabrot") {
 

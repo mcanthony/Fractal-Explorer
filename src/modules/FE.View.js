@@ -34,7 +34,9 @@
 
 		function zoom(x, y, dz) {
 
-			if (zoom.pending || FE.Settings.fractal == "Buddhabrot") { return; }
+			if (FE.Settings.fractal == "Buddhabrot") { return; }
+			if (zoom.pending || FE.Renderer.pending) { FE.View.requestZoom = [x,y,dz]; return; }
+
 			zoom.pending = true;
 
 			var S = FE.Settings;
@@ -59,9 +61,9 @@
 				y: -(y/H-0.5)*H/2*A
 			
 			}, function() {
+				zoom.pending = false;
 				FE.Renderer.render();
 				$(this).css("transform", "none");
-				zoom.pending = false;
 			});
 		}
 
@@ -137,9 +139,24 @@
 		/* =================== */
 
 		function reset() {
+
+			var url = window.location.protocol + '//' + window.location.host + window.location.pathname;
+			window.history.replaceState(null, document.title, url);
+
 			FE.Settings.coordinates = { x: 0, y: 0, z: 4 };
 			FE.Gui.update();
 			FE.Renderer.render();
+		}
+
+		/* =================== */
+		/* ====== SHARE ====== */
+		/* =================== */
+
+		function share() {
+			var hash = btoa(JSON.stringify(FE.Settings));
+			var url = window.location.protocol + '//' + window.location.host + window.location.pathname;
+			window.history.replaceState(null, document.title, url + "#" + hash);
+			alert("Done! Copy the URL in your addressbar and share it anywhere.");
 		}
 
 		/* ====================== */
@@ -171,6 +188,7 @@
 			init: init,
 			reset: reset,
 			zoom: zoom,
+			share: share,
 			download: download
 		};
 
