@@ -72,28 +72,14 @@
 		/* ================== */
 
 		function drag(dx, dy) {
-			if (FE.Settings.fractal == "Buddhabrot") { return; }
-			$(FE.Renderer.canvas).css({ transform: "translate(" + dx + "px," + dy + "px)" });
-		}
-
-		/* ========================= */
-		/* ====== DRAG_FINISH ====== */
-		/* ========================= */
-
-		function dragFinish() {
 
 			if (FE.Settings.fractal == "Buddhabrot") { return; }
 			var aspect = window.innerHeight / window.innerWidth;
 
-			FE.Settings.coordinates.x -= view.mouse.drag.x / window.innerWidth * FE.Settings.coordinates.z;
-			FE.Settings.coordinates.y -= view.mouse.drag.y / window.innerHeight * FE.Settings.coordinates.z * aspect;
-			
-			if (view.mouse.drag.x || view.mouse.drag.y) {
-				FE.Renderer.render();
-				$(FE.Renderer.canvas).css({ transform: "translate(0px,0px)" });
-			}
+			FE.Settings.coordinates.x = view.mouse.dragStart.r - view.mouse.drag.x / window.innerWidth * FE.Settings.coordinates.z;
+			FE.Settings.coordinates.y = view.mouse.dragStart.i - view.mouse.drag.y / window.innerHeight * FE.Settings.coordinates.z * aspect;
 
-			delete view.mouse.dragStart;
+			FE.Renderer.render({ preview: true });
 		}
 
 		/* ======================= */
@@ -104,7 +90,12 @@
 
 			view.mouse.down = e.which;
 			view.mouse.drag = { x: 0, y: 0 };
-			view.mouse.dragStart = { x: e.pageX, y: e.pageY };
+			view.mouse.dragStart = {
+				x: e.pageX,
+				y: e.pageY,
+				r: FE.Settings.coordinates.x,
+				i: FE.Settings.coordinates.y
+			};
 			
 			e.preventDefault();
 		}
@@ -178,7 +169,7 @@
 		/* ====== EVENTS ====== */
 		/* ==================== */
 
-		function mouseup(e) { view.mouse && view.mouse.drag && dragFinish(); }
+		function mouseup(e) { if (view.mouse) { delete view.mouse.dragStart; FE.Renderer.render(); } }
 		function keyup(e) { e.keyCode == 17 && FE.Renderer.render(); }
 		function scroll(e) { zoom(view.mouse.pos.x, view.mouse.pos.y, e.originalEvent.deltaY < 0 ? 0.5 : 2.0); }
 

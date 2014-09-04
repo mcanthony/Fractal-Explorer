@@ -38,9 +38,7 @@
 				S.resolution._factor = S.resolution.factor/S.resolution.steps;
 				render.init = true;
 
-				if (!opts.preview) {
-					FE.Gui.update();
-				}
+				!opts.preview && FE.Gui.update();
 			}
 
 			FE.Renderer.pending = true;
