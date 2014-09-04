@@ -114,11 +114,11 @@
 
 			for(y = 0; y < H; y++) {
 
-				_y = (y/H-0.5)*CZ;
+				_y = (y/H-0.5)*CZ+CY;
 
 				for(x = 0; x < W; x++) {
 
-					_x = (x/W-0.5)*CZ;
+					_x = (x/W-0.5)*CZ+CX;
 
 					if (_x*_x+_y*_y>2) { continue; }
 
@@ -189,11 +189,11 @@
 
 			for(y = 0; y < H; y++) {
 
-				_y = (y/H-0.5)*CZ;
+				_y = (y/H-0.5)*CZ+CY;
 
 				for(x = 0; x < W; x++) {
 
-					_x = (x/W-0.5)*CZ;
+					_x = (x/W-0.5)*CZ+CX;
 
 					if (_x*_x+_y*_y>2) { continue; }
 

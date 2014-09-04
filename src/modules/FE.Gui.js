@@ -44,9 +44,9 @@
 
 			d.view = d.addFolder("View");
 			d.view.coordinates = d.view.addFolder("Coordinates");
-			d.view.coordinates.add(S.coordinates,"x",-2,2).step(0.01)[f](r);
-			d.view.coordinates.add(S.coordinates,"y",-2,2).step(0.01)[f](r);
-			d.view.coordinates.add(S.coordinates,"z", 4,0).step(0.01)[f](r);
+			d.view.coordinates.add(S.coordinates,"x",-2,2).step(0.1)[f](r);
+			d.view.coordinates.add(S.coordinates,"y",-2,2).step(0.1)[f](r);
+			d.view.coordinates.add(S.coordinates,"z", 0,4).step(0.1)[f](r);
 
 			d.view.position = d.view.addFolder("Position");
 			d.view.position.add(S.position,"x",-2,2).step(0.01)[f](r);
