@@ -10,7 +10,7 @@
 
 		iterations: 100,
 		coordinates: { x: 0, y: 0, z: 4 },
-		position: { x: 0.34288121314237574, y: 0.0455005055611728 },
+		position: { x: 0, y: 0 },
 		resolution: { factor: 1, steps: 4 },
 		
 		shading: {
