@@ -108,6 +108,8 @@
 				var obj = JSON.parse(atob(window.location.hash.substr(1)));
 				for (var attr in obj) { FE.Settings[attr] = obj[attr]; }
 
+				init(true);
+
 			} catch(e) { success = false; }
 
 			return success;
