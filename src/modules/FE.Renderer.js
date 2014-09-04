@@ -32,7 +32,8 @@
 			opts = opts || {};
 
 			var S = FE.Settings;
-			var render_fn = renderer["render" + FE.Settings.fractal];
+			var buddhabrot = S.fractal.indexOf("Buddhabrot") != -1;
+			var render_fn = renderer["render" + S.fractal];
 
 			if (!render_fn) {
 				alert(S.renderer + " renderer not yet available for " + S.fractal);
@@ -41,7 +42,7 @@
 
 			if (!render.init && !FE.Renderer.pending) {
 
-				S.resolution._factor = S.resolution.factor/S.resolution.steps;
+				S.resolution._factor = buddhabrot ? S.resolution.factor : S.resolution.factor/S.resolution.steps;
 				render.init = true;
 
 				!opts.preview && FE.Gui.update();
@@ -59,7 +60,7 @@
 				return FE.View.zoom.apply(FE.View.zoom, args);
 			}
 
-			if (S.resolution._factor < S.resolution.factor && !opts.preview && !FE.View.requestDrag) {
+			if (S.resolution._factor < S.resolution.factor && !opts.preview && !FE.View.requestDrag && !buddhabrot) {
 
 				S.resolution._factor = Math.min(S.resolution.factor, S.resolution._factor + S.resolution.factor/S.resolution.steps);
 				window.setTimeout(render,1);
