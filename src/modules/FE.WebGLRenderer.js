@@ -128,6 +128,7 @@
 		/* =============================== */
 
 		function renderBuddhabrot() {
+			alert("WebGL renderer not yet available for buddhabrot");
 			gl.useProgram(instance.programs.Buddhabrot);
 			render();
 		}
