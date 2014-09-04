@@ -12,6 +12,8 @@
 
 		function init() {
 
+			if (!window.WebGLRenderingContext) { return; }
+
 			var canvas = document.getElementById("webgl");
 			var contextIds = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
 			var attributes = { alpha: false, depth: false, antialias: false, stencil: false, premultipliedAlpha: false, preserveDrawingBuffer: true };

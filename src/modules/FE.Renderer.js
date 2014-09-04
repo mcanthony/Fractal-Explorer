@@ -67,6 +67,11 @@
 
 		function set(which, init) {
 
+			if (which == "WebGL" && !window.WebGLRenderingContext) {
+				alert("Your browser does not support WebGL");
+				which = "Canvas";
+			}
+
 			FE.Settings.renderer = which;
 			renderer = FE[which + "Renderer"];
 
@@ -88,6 +93,16 @@
 
 		function resize() {
 
+			var canvas = document.querySelector("canvas.active");
+
+			canvas.width = ~~(window.innerWidth * FE.Settings.resolution._factor);
+			canvas.height = ~~(window.innerHeight * FE.Settings.resolution._factor);
+
+			if (FE.Settings.renderer == "WebGL")
+			{ FE.WebGLRenderer.getContext().viewport(0, 0, window.innerWidth, window.innerHeight); }
+
+			render({ preview: true });
+
 			if (resize.init) { return; }
 
 			resize.init = true;
@@ -98,28 +113,11 @@
 				if (resize.oldSize == newSize) {
 					window.clearInterval(resize.interval);
 					resize.init = false;
-					resizeFinish();
+					render();
 				}
 
 				resize.oldSize = newSize;
-			}, 200);
-		}
-
-		/* =========================== */
-		/* ====== RESIZE_FINISH ====== */
-		/* =========================== */
-
-		function resizeFinish() {
-
-			var canvas = document.querySelector("canvas.active");
-
-			canvas.width = ~~(window.innerWidth * FE.Settings.resolution._factor);
-			canvas.height = ~~(window.innerHeight * FE.Settings.resolution._factor);
-
-			if (FE.Settings.renderer == "WebGL")
-			{ FE.WebGLRenderer.getContext().viewport(0, 0, window.innerWidth, window.innerHeight); }
-
-			render();
+			}, 500);
 		}
 
 		return {
