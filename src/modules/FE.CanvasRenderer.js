@@ -133,7 +133,7 @@
 				}
 			}
 
-			l = 1/Math.log(W*H*H/W+N)*2000;
+			l = 1/Math.log(W*H*H/W+N)*1000;
 
 			for(k=A.length;k--;) {
 
