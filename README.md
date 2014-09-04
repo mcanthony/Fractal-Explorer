@@ -23,4 +23,5 @@ A JavaScript based fractal explorer with several features.
 
 * Mandelbrot
 * Buddhabrot
+* Anti-Buddhabrot
 * Julia
