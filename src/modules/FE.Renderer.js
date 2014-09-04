@@ -94,29 +94,27 @@
 		function resize() {
 
 			var canvas = document.querySelector("canvas.active");
+			var W = window.innerWidth;
+			var H = window.innerHeight;
 
-			canvas.width = ~~(window.innerWidth * FE.Settings.resolution._factor);
-			canvas.height = ~~(window.innerHeight * FE.Settings.resolution._factor);
+			canvas.width = ~~(W * FE.Settings.resolution._factor);
+			canvas.height = ~~(H * FE.Settings.resolution._factor);
 
 			if (FE.Settings.renderer == "WebGL")
-			{ FE.WebGLRenderer.getContext().viewport(0, 0, window.innerWidth, window.innerHeight); }
+			{ FE.WebGLRenderer.getContext().viewport(0, 0, W, H); }
 
 			render({ preview: true });
+			if (resize.interval) { return; }
 
-			if (resize.init) { return; }
-
-			resize.init = true;
 			resize.interval = window.setInterval(function() {
-				
-				var newSize = window.innerWidth+window.innerHeight
-				
-				if (resize.oldSize == newSize) {
-					window.clearInterval(resize.interval);
-					resize.init = false;
-					render();
-				}
 
-				resize.oldSize = newSize;
+				if (resize.oldSize == W+H) {
+
+					window.clearInterval(resize.interval);
+					delete resize.interval; render();
+
+				} else { resize.oldSize = W+H; }
+
 			}, 100);
 		}
 
