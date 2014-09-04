@@ -63,7 +63,7 @@
 			}, function() {
 				zoom.pending = false;
 				FE.Renderer.render();
-				$(this).css("transform", "none");
+				$(this).css("transform","none");
 			});
 		}
 
@@ -103,10 +103,9 @@
 				FE.Settings.coordinates.y -= view.mouse.drag.y / window.innerHeight * FE.Settings.coordinates.z * aspect;
 			}
 
-
 			if (view.mouse.drag.x || view.mouse.drag.y) {
 				FE.Renderer.render();
-				$(FE.Renderer.canvas).css({ transform: "translate(0px,0px)" });
+				$(FE.Renderer.canvas).css("transform","none");
 			}
 
 			delete view.mouse.dragStart;
@@ -138,7 +137,7 @@
 
 			view.mouse.pos = { x: e.pageX, y: e.pageY };
 
-			if (e.ctrlKey) {
+			if (e.ctrlKey && FE.Settings.fractal == "Julia") {
 				FE.Settings.position.x = (e.pageX / window.innerWidth - 0.5) * 2;
 				FE.Settings.position.y = (e.pageY / window.innerHeight - 0.5) * 2;
 				return FE.Renderer.render({ preview: true });
@@ -200,7 +199,7 @@
 		/* ==================== */
 
 		function mouseup(e) { view.mouse && view.mouse.drag && dragFinish(); }
-		function keyup(e) { e.keyCode == 17 && FE.Renderer.render(); }
+		function keyup(e) { e.keyCode == 17 && FE.Settings.fractal == "Julia" && FE.Renderer.render(); }
 		function scroll(e) { zoom(view.mouse.pos.x, view.mouse.pos.y, e.originalEvent.deltaY < 0 ? 0.5 : 2.0); }
 
 		return {
