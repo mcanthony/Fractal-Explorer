@@ -15,6 +15,7 @@
 			factor: 1,
 			steps: 4,
 			iterations: 100,
+			buddhaEscape: 200,
 			renderOnDrag: true
 		},
 		

@@ -14,7 +14,7 @@
 			},
 
 			Buddhabrot: {
-				"None": [0,0,4,100,0.3]
+				"None": [0,0,4,300,0.3]
 			},
 
 			AntiBuddhabrot: {

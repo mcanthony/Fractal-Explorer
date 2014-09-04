@@ -23,7 +23,8 @@
 			d.resolution = d.addFolder("Resolution");
 			d.resolution.add(S.resolution,"factor",0.1,1).step(0.01)[f](r);
 			d.resolution.add(S.resolution,"steps",1,10).step(1)[f](r);
-			d.resolution.add(S.resolution,"iterations",10,1000).step(1)[f](r);
+			d.resolution.add(S.resolution,"iterations",10,10000).step(1)[f](r);
+			d.resolution.add(S.resolution,"buddhaEscape",0,10000).step(1)[f](r);
 			d.resolution.add(S.resolution,"renderOnDrag")[f](r);
 
 			d.shading = d.addFolder("Shading");

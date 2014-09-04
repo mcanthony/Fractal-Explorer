@@ -93,6 +93,7 @@
 				d = imageData.data,
 				A = [],
 			    N = S.resolution.iterations,
+			    B = S.resolution.buddhaEscape,
 			    R = S.resolution._factor,
 
 			    CX = S.coordinates.x,
@@ -129,11 +130,11 @@
 						i = 2*t*i+_y;t=r;
 					}
 
-					n<(N-N/2)&&r*r+i*i>2 && A.push([_x,_y]);
+					n<(N-B)&&r*r+i*i>2 && A.push([_x,_y]);
 				}
 			}
 
-			l = 1/Math.log(W*H*H/W+N)*1000;
+			l = 1/Math.log(N)*255;
 
 			for(k=A.length;k--;) {
 
