@@ -143,9 +143,7 @@
 			var url = window.location.protocol + '//' + window.location.host + window.location.pathname;
 			window.history.replaceState(null, document.title, url);
 
-			FE.Settings.coordinates = { x: 0, y: 0, z: 4 };
-			FE.Gui.update();
-			FE.Renderer.render();
+			FE.Presets.load("None");
 		}
 
 		/* =================== */
