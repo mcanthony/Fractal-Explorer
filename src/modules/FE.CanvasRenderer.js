@@ -208,7 +208,7 @@
 				}
 			}
 
-			l = 1/Math.log(W*H*H/W+N)*255;
+			l = 1/Math.log(W*H*H/W+N)*50;
 
 			for(k=A.length;k--;) {
 
