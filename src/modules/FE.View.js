@@ -74,12 +74,42 @@
 		function drag(dx, dy) {
 
 			if (FE.Settings.fractal == "Buddhabrot") { return; }
+
+			if (!FE.Settings.resolution.renderOnDrag) {
+				$(FE.Renderer.canvas).css({ transform: "translate(" + dx + "px," + dy + "px)" });
+				return;
+			}
+
 			var aspect = window.innerHeight / window.innerWidth;
 
 			FE.Settings.coordinates.x = view.mouse.dragStart.r - view.mouse.drag.x / window.innerWidth * FE.Settings.coordinates.z;
 			FE.Settings.coordinates.y = view.mouse.dragStart.i - view.mouse.drag.y / window.innerHeight * FE.Settings.coordinates.z * aspect;
 
 			FE.Renderer.render({ preview: true });
+		}
+
+		/* ========================= */
+		/* ====== DRAG_FINISH ====== */
+		/* ========================= */
+
+		function dragFinish() {
+
+			if (FE.Settings.fractal == "Buddhabrot") { return; }
+
+			if (!FE.Settings.resolution.renderOnDrag) {
+
+				var aspect = window.innerHeight / window.innerWidth;
+				FE.Settings.coordinates.x -= view.mouse.drag.x / window.innerWidth * FE.Settings.coordinates.z;
+				FE.Settings.coordinates.y -= view.mouse.drag.y / window.innerHeight * FE.Settings.coordinates.z * aspect;
+			}
+
+
+			if (view.mouse.drag.x || view.mouse.drag.y) {
+				FE.Renderer.render();
+				$(FE.Renderer.canvas).css({ transform: "translate(0px,0px)" });
+			}
+
+			delete view.mouse.dragStart;
 		}
 
 		/* ======================= */
@@ -157,7 +187,7 @@
 			var S = FE.Settings;
 			var a = document.createElement("a");
 			
-			a.download = S.fractal + "{" + [S.coordinates.x,S.coordinates.y,S.coordinates.z,S.iterations].join(",") + "}.png";
+			a.download = S.fractal + "{" + [S.coordinates.x,S.coordinates.y,S.coordinates.z,S.resolution.iterations].join(",") + "}.png";
 			a.href = document.querySelector("canvas.active").toDataURL();
 			a.target = "_self";
 
@@ -169,7 +199,7 @@
 		/* ====== EVENTS ====== */
 		/* ==================== */
 
-		function mouseup(e) { if (view.mouse) { delete view.mouse.dragStart; FE.Renderer.render(); } }
+		function mouseup(e) { view.mouse && view.mouse.drag && dragFinish(); }
 		function keyup(e) { e.keyCode == 17 && FE.Renderer.render(); }
 		function scroll(e) { zoom(view.mouse.pos.x, view.mouse.pos.y, e.originalEvent.deltaY < 0 ? 0.5 : 2.0); }
 

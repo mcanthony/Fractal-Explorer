@@ -27,7 +27,7 @@
 			var imageData = ctx.createImageData(W,H),
 
 				d = imageData.data,
-			    N = S.iterations,
+			    N = S.resolution.iterations,
 
 			    CX = S.coordinates.x,
 			    CY = S.coordinates.y,
@@ -92,7 +92,7 @@
 
 				d = imageData.data,
 				A = new Array(W*H).join("0").split(""),
-			    N = S.iterations,
+			    N = S.resolution.iterations,
 
 			    CX = S.coordinates.x,
 			    CY = S.coordinates.y,
@@ -147,7 +147,7 @@
 			var imageData = ctx.createImageData(W,H),
 
 				d = imageData.data,
-			    N = S.iterations,
+			    N = S.resolution.iterations,
 
 			    CX = S.coordinates.x,
 			    CY = S.coordinates.y,

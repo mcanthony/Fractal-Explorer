@@ -8,10 +8,15 @@
 		fractal: "Mandelbrot",
 		preset: "None",
 
-		iterations: 100,
 		coordinates: { x: 0, y: 0, z: 4 },
 		position: { x: 0, y: 0 },
-		resolution: { factor: 1, steps: 4 },
+
+		resolution: {
+			factor: 1,
+			steps: 4,
+			iterations: 100,
+			renderOnDrag: true
+		},
 		
 		shading: {
 			smooth: true,

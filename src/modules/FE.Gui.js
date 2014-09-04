@@ -19,10 +19,12 @@
 			var d = datGUI;
 			var f = "onFinishChange";
 			var r = FE.Renderer.render;
-			
+
 			d.resolution = d.addFolder("Resolution");
 			d.resolution.add(S.resolution,"factor",0.1,1).step(0.01)[f](r);
 			d.resolution.add(S.resolution,"steps",1,10).step(1)[f](r);
+			d.resolution.add(S.resolution,"iterations",10,1000).step(1)[f](r);
+			d.resolution.add(S.resolution,"renderOnDrag")[f](r);
 
 			d.shading = d.addFolder("Shading");
 			d.shading.scale = d.shading.addFolder("Color Scale");
@@ -57,7 +59,6 @@
 			d.add(S,"renderer",["Canvas","WebGL"])[f](FE.Renderer.set);
 			d.add(S,"fractal",Object.keys(FE.Presets.presets))[f](function() { init(true); FE.Presets.load("None"); });
 			d.add(S,"preset",Object.keys(FE.Presets.presets[S.fractal])).onChange(FE.Presets.load);
-			d.add(S,"iterations",10,1000).step(1)[f](r);
 
 			d.add(FE.Gui,"github");
 			d.add(FE.Gui,"help");

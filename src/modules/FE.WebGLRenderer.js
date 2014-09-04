@@ -100,7 +100,7 @@
 			var pr = instance.programs[S.fractal];
 
 			gl.uniform2f(pr.uResolution, W, H);
-			gl.uniform1f(pr.uIterations, S.iterations);
+			gl.uniform1f(pr.uIterations, S.resolution.iterations);
 
 			gl.uniform1f(pr.uSmoothShading, Number(S.shading.smooth));
 			gl.uniform1f(pr.uShadingScale, S.shading.scale);
