@@ -78,7 +78,7 @@
 
 			FE.Renderer.canvas = canvas[0];
 
-			if (init) { FE.Presets.load("None"); }
+			if (init && !FE.Gui.readURL()) { FE.Presets.load("None"); }
 			else { render(); }
 		}
 

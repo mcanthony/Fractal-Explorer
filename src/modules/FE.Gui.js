@@ -12,7 +12,7 @@
 
 		function init(reset) {
 
-			reset ? datGUI.destroy() : readURL();
+			reset && datGUI.destroy();
 			datGUI = new dat.GUI();
 
 			var S = FE.Settings;
@@ -101,16 +101,16 @@
 
 		function readURL() {
 
-			var fail = false;
+			var success = true;
 
 			try {
 
-				FE.Settings = JSON.parse(atob(window.location.hash.substr(1)));
-				update();
+				var obj = JSON.parse(atob(window.location.hash.substr(1)));
+				for (var attr in obj) { FE.Settings[attr] = obj[attr]; }
 
-			} catch(e) { fail = true; }
+			} catch(e) { success = false; }
 
-			return fail;
+			return success;
 		}
 
 		/* ================== */
@@ -139,6 +139,7 @@
 			init: init,
 			update: update,
 			github: github,
+			readURL: readURL,
 			help: help
 		};
 
