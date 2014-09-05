@@ -58,7 +58,7 @@
 			d.view.add(FE.View,"download");
 
 			d.add(S,"renderer",["Canvas","WebGL"])[f](FE.Renderer.set);
-			d.add(S,"fractal",Object.keys(FE.Presets.presets))[f](function() { init(true); FE.Presets.load("None"); });
+			d.add(S,"fractal",Object.keys(FE.Presets.presets))[f](function() { init(true); FE.View.reset(); });
 			d.add(S,"preset",Object.keys(FE.Presets.presets[S.fractal])).onChange(FE.Presets.load);
 
 			d.add(FE.Gui,"github");
@@ -70,11 +70,7 @@
 		/* ==================== */
 
 		function update() {
-
-			datGUI.__controllers.forEach(function(controller) {
-				controller.updateDisplay();
-			});
-
+			datGUI.__controllers.forEach(function(c) { c.updateDisplay(); });
 			updateFolders(datGUI);
 		}
 
@@ -84,15 +80,12 @@
 
 		function updateFolders(d) {
 
-			Object.keys(d.__folders).forEach(function(folder) {
+			Object.keys(d.__folders).forEach(function(f) {
 
-				folder = d.__folders[folder];
+				f = d.__folders[f];
+				f.__controllers.forEach(function(c) { c.updateDisplay(); });
 
-				folder.__controllers.forEach(function(controller) {
-					controller.updateDisplay();
-				});
-
-				if (Object.keys(folder.__folders).length) { updateFolders(folder); }
+				if (Object.keys(f.__folders).length) { updateFolders(f); }
 			});
 		}
 
@@ -106,8 +99,10 @@
 
 			try {
 
-				var obj = JSON.parse(atob(window.location.hash.substr(1)));
-				FE.Settings = FE.Utils.merge(FE.Settings,obj);
+				FE.Settings = FE.Utils.merge(
+					FE.Settings,
+					JSON.parse(atob(window.location.hash.substr(1)))
+				);
 
 				init(true);
 

@@ -4,21 +4,16 @@
 
 	FE.View = (function() {
 
-		var view = {
-			mouse: {
-				pos: { x: 0, y: 0 },
-				drag: { x: 0, y: 0 }
-			}
-		};
-
 		/* ================== */
 		/* ====== INIT ====== */
 		/* ================== */
 
 		function init() {
 
-			view.mouse.pos.x = window.innerWidth/2;
-			view.mouse.pos.y = window.innerHeight/2;
+			FE.View.mouse = {
+				pos: { x: window.innerWidth/2, y: window.innerHeight/2 },
+				drag: { x: 0, y: 0 }
+			};
 
 			var $container = document.getElementById("container");
 			$container.addEventListener("mousedown", mousedown, false);
@@ -37,16 +32,21 @@
 
 		function zoom(dz) {
 
-			if (FE.Settings.fractal.indexOf("Buddhabrot") != -1) { return; }
-			if (FE.Renderer.pending) { FE.View.requestZoom = dz; return; }
+			if (~FE.Settings.fractal.indexOf("Buddhabrot")) { return; }
+			if (FE.Renderer.pending) { FE.requestZoom = dz; return; }
 
 			var S = FE.Settings;
 			var C = S.coordinates;
 			var O = S.offset;
+
 			var W = window.innerWidth;
 			var H = window.innerHeight;
-			var x = (view.mouse.pos.x/W-0.5)*4;
-			var y = (view.mouse.pos.y/H-0.5)*4*H/W;
+
+			var x = (FE.View.mouse.pos.x/W-0.5)*4;
+			var y = (FE.View.mouse.pos.y/H-0.5)*4*H/W;
+
+			// Magic calculations that literarely
+			// took me 4 hours to figure out..
 
 			if (zoom.lx != x) {
 				O.x = x/-2*0.5;
@@ -63,8 +63,9 @@
 			}
 
 			C.z *= dz > 0 ? 0.9 : 1.1;
-
 			FE.Renderer.render({ preview: true });
+
+			// Render after 500 ms inactivity
 			window.clearInterval(zoom.timeout);
 			zoom.timeout = window.setTimeout(FE.Renderer.render, 500);
 		}
@@ -75,7 +76,7 @@
 
 		function drag(dx, dy) {
 
-			if (FE.Settings.fractal.indexOf("Buddhabrot") != -1) { return; }
+			if (~FE.Settings.fractal.indexOf("Buddhabrot")) { return; }
 
 			FE.View.requestDrag = true;
 
@@ -84,10 +85,11 @@
 				return;
 			}
 
-			var aspect = window.innerHeight / window.innerWidth;
+			var W = window.innerWidth;
+			var H = window.innerHeight;
 
-			FE.Settings.coordinates.x = view.mouse.dragStart.r - view.mouse.drag.x / window.innerWidth * FE.Settings.coordinates.z;
-			FE.Settings.coordinates.y = view.mouse.dragStart.i - view.mouse.drag.y / window.innerHeight * FE.Settings.coordinates.z * aspect;
+			FE.Settings.coordinates.x = FE.View.mouse.dragStart.r - FE.View.mouse.drag.x / W * FE.Settings.coordinates.z;
+			FE.Settings.coordinates.y = FE.View.mouse.dragStart.i - FE.View.mouse.drag.y / H * FE.Settings.coordinates.z * H/W;
 
 			FE.Renderer.render({ preview: true });
 		}
@@ -98,23 +100,25 @@
 
 		function dragFinish() {
 
-			if (FE.Settings.fractal.indexOf("Buddhabrot") != -1) { return; }
+			if (~FE.Settings.fractal.indexOf("Buddhabrot")) { return; }
+			FE.View.requestDrag = false;
 
 			if (!FE.Settings.resolution.renderOnDrag) {
 
-				var aspect = window.innerHeight / window.innerWidth;
-				FE.Settings.coordinates.x -= view.mouse.drag.x / window.innerWidth * FE.Settings.coordinates.z;
-				FE.Settings.coordinates.y -= view.mouse.drag.y / window.innerHeight * FE.Settings.coordinates.z * aspect;
-			}
+				var W = window.innerWidth;
+				var H = window.innerHeight;
 
-			FE.View.requestDrag = false;
+				FE.Settings.coordinates.x -= FE.View.mouse.drag.x / W * FE.Settings.coordinates.z;
+				FE.Settings.coordinates.y -= FE.View.mouse.drag.y / H * FE.Settings.coordinates.z * H/W;
+			}
 			
-			if (view.mouse.drag.x || view.mouse.drag.y) {
+			// Only render if dragging actually happened
+			if (FE.View.mouse.drag.x || FE.View.mouse.drag.y) {
 				FE.Renderer.render();
 				FE.Renderer.canvas.style.transform = "none";
 			}
 
-			delete view.mouse.dragStart;
+			delete FE.View.mouse.dragStart;
 		}
 
 		/* ======================= */
@@ -123,9 +127,12 @@
 
 		function mousedown(e) {
 
-			view.mouse.down = e.which;
-			view.mouse.drag = { x: 0, y: 0 };
-			view.mouse.dragStart = {
+			if (~FE.Settings.fractal.indexOf("Buddhabrot")) { return; }
+
+			FE.View.mouse.down = e.which;
+			FE.View.mouse.drag = { x: 0, y: 0 };
+
+			FE.View.mouse.dragStart = {
 				x: e.pageX,
 				y: e.pageY,
 				r: FE.Settings.coordinates.x,
@@ -141,25 +148,25 @@
 
 		function mousemove(e) {
 
-			view.mouse.pos = {
-				x: e.pageX, y: e.pageY,
-				z: FE.Settings.coordinates.z
-			};
+			FE.View.mouse.pos = { x: e.pageX, y: e.pageY };
 
+			// Update julia coordinates
 			if (e.ctrlKey && FE.Settings.fractal == "Julia") {
+
 				FE.Settings.position.x = (e.pageX / window.innerWidth - 0.5) * 2;
 				FE.Settings.position.y = (e.pageY / window.innerHeight - 0.5) * 2;
 				return FE.Renderer.render({ preview: true });
 			}
 
-			if (view.mouse.dragStart) {
+			// Update drag values
+			if (FE.View.mouse.dragStart) {
 
-				view.mouse.drag = {
-					x: e.pageX - view.mouse.dragStart.x,
-					y: e.pageY - view.mouse.dragStart.y
+				FE.View.mouse.drag = {
+					x: e.pageX - FE.View.mouse.dragStart.x,
+					y: e.pageY - FE.View.mouse.dragStart.y
 				};
 
-				drag(view.mouse.drag.x, view.mouse.drag.y);
+				drag(FE.View.mouse.drag.x, FE.View.mouse.drag.y);
 			}
 		}
 
@@ -208,7 +215,7 @@
 		/* ====== EVENTS ====== */
 		/* ==================== */
 
-		function mouseup(e) { view.mouse && view.mouse.drag && dragFinish(); }
+		function mouseup(e) { FE.View.mouse.drag && dragFinish(); }
 		function keyup(e) { e.keyCode == 17 && FE.Settings.fractal == "Julia" && FE.Renderer.render(); }
 		function scroll(e) { zoom(Math.max(-1,Math.min(1,(e.wheelDelta||-e.detail)))); }
 

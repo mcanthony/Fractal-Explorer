@@ -2,7 +2,7 @@
 
 	"use strict";
 
-	FE.Utils = {}
+	FE.Utils = {};
 	
 	FE.Utils.merge = function m(a, b) {
 		
