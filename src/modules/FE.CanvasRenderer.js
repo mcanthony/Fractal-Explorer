@@ -139,6 +139,8 @@
 
 					n<(N-B)&&r*r+i*i>2 && A.push([_x,_y]);
 				}
+
+				if (_x*_x+_y*_y>2) { continue; }
 			}
 
 			l = 1/Math.log(N)*255;
@@ -217,6 +219,8 @@
 
 					r*r+i*i<2 && A.push([_x,_y]);
 				}
+
+				if (_x*_x+_y*_y>2) { continue; }
 			}
 
 			l = 1/Math.log(W*H*H/W+N)*50;
