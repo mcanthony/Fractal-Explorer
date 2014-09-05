@@ -91,6 +91,7 @@
 			var D = 1000;
 
 			FE.View.changeMode("center", D, D);
+			D *= S.resolution.factor;
 
 			ctx.canvas.width = D;
 			ctx.canvas.height = D;
@@ -160,6 +161,7 @@
 			var D = 1000;
 
 			FE.View.changeMode("center", D, D);
+			D *= S.resolution.factor;
 
 			ctx.canvas.width = D;
 			ctx.canvas.height = D;
