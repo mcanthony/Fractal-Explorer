@@ -11,7 +11,9 @@ module.exports = function(grunt) {
 				browser: true,
 				asi: true,
 				smarttabs: true,
-				expr: true
+				expr: true,
+				evil: true,
+				laxbreak: true
 			},
 			before: ["src/modules/*.js"],
 			after: ["www/build.js"]

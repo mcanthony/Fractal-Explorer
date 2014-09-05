@@ -24,25 +24,11 @@
 			});
 
 			instance.programs = {
-				Mandelbrot: createProgram("mandelbrot"),
-				Julia: createProgram("julia")
+				Mandelbrot: createProgram("Mandelbrot"),
+				Julia: createProgram("Julia")
 			};
 
 			gl.viewport(0, 0, window.innerWidth, window.innerHeight);
-		}
-
-		/* ======================== */
-		/* ====== GET_SHADER ====== */
-		/* ======================== */
-
-		function getShader(name) {
-
-			var req = new XMLHttpRequest();
-
-			req.open("GET","glsl/" + name + ".glsl",false);
-			req.send(0);
-
-			return req.responseText;
 		}
 
 		/* ============================ */
@@ -56,7 +42,7 @@
 			var pr = gl.createProgram();
 
 			gl.shaderSource(vs, "attribute vec2 aPos;\nvoid main(){gl_Position=vec4(aPos.x,aPos.y,0.0,1.0);\n}");
-			gl.shaderSource(fs, getShader(fractal));
+			gl.shaderSource(fs, eval("shader"+fractal+"()"));
 
 			gl.compileShader(vs);
 			gl.compileShader(fs);
@@ -116,6 +102,91 @@
 
 			gl.vertexAttribPointer(pr.aPos, 2, gl.FLOAT, false, 0, 0);
 			gl.drawArrays(gl.TRIANGLES, 0, 6);
+		}
+
+		/* =============================== */
+		/* ====== SHADER_MANDELBROT ====== */
+		/* =============================== */
+
+		function shaderMandelbrot() {
+
+			return "precision mediump float;\n"
+
+			+ "uniform vec2 uResolution;\n"
+			+ "uniform vec3 uCoordinates;\n"
+			+ "uniform vec2 uOffset;\n"
+			+ "uniform vec3 uColorScale;\n"
+			+ "uniform vec3 uColorShift;\n"
+			+ "uniform float uShadingScale;\n"
+			+ "uniform float uIterations;\n"
+			+ "uniform float uSmoothShading;\n"
+
+			+ "void main()\n"
+			+ "{\n"
+			    + "vec2 z = vec2(0);\n"
+				+ "vec2 c = (gl_FragCoord.xy/uResolution.xy-0.5+uOffset) * uCoordinates.z * vec2(1,uResolution.y/uResolution.x);\n"
+
+			    + "float n = 0.0;\n"
+
+				+ "for(float i=0.0;i<1000.0;i+=1.0)\n"
+				+ "{\n"
+					+ "z = vec2(z.x*z.x-z.y*z.y,2.0*z.x*z.y)+c+uCoordinates.xy;\n"
+			        + "n = z.x*z.x+z.y*z.y;\n"
+
+			        + "if(n>128.0||i>uIterations)\n"
+			        + "{\n"
+			            + "if (uSmoothShading>0.0)\n"
+			            + "n = i>0.0?(i-log2(log2(z.x*z.x+z.y*z.y)))*uShadingScale:0.0;\n"
+			            + "else\n"
+			            + "n = i>0.0?(1000.0-i+101.0)*uShadingScale:0.0;\n"
+			            + "gl_FragColor=vec4(sin((n+uColorShift)*uColorScale),1);\n"
+			            + "break;\n"
+			        + "}\n"
+				+ "}\n"
+			+ "}";
+		}
+
+		/* ========================== */
+		/* ====== SHADER_JULIA ====== */
+		/* ========================== */
+
+		function shaderJulia() {
+
+			return "precision mediump float;\n"
+
+			+ "uniform vec2 uResolution;\n"
+			+ "uniform vec3 uCoordinates;\n"
+			+ "uniform vec2 uPosition;\n"
+			+ "uniform vec2 uOffset;\n"
+			+ "uniform vec3 uColorScale;\n"
+			+ "uniform vec3 uColorShift;\n"
+			+ "uniform float uShadingScale;\n"
+			+ "uniform float uIterations;\n"
+			+ "uniform float uSmoothShading;\n"
+
+			+ "void main()\n"
+			+ "{\n"
+			    + "vec2 z = ((gl_FragCoord.xy/uResolution.xy-0.5+uOffset) * uCoordinates.z * vec2(1,uResolution.y/uResolution.x) + uCoordinates.xy);\n"
+			    + "vec2 c = uPosition;\n"
+
+			    + "float n = 0.0;\n"
+
+				+ "for(float i=0.0;i<1000.0;i+=1.0)\n"
+				+ "{\n"
+					+ "z = vec2(z.x*z.x-z.y*z.y,2.0*z.x*z.y)+c;\n"
+			        + "n = z.x*z.x+z.y*z.y;\n"
+
+			        + "if(n>128.0||i>uIterations)\n"
+			        + "{\n"
+			            + "if (uSmoothShading>0.0)\n"
+			            + "n = i>0.0?(i-log2(log2(z.x*z.x+z.y*z.y)))*uShadingScale:0.0;\n"
+			            + "else\n"
+			            + "n = i>0.0?(1000.0-i+101.0)*uShadingScale:0.0;\n"
+			            + "gl_FragColor=vec4(sin((n+uColorShift)*uColorScale),1);\n"
+			            + "break;\n"
+			        + "}\n"
+				+ "}\n"
+			+ "}";
 		}
 
 		/* =============================== */
