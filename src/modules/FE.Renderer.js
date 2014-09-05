@@ -53,11 +53,9 @@
 			FE.Renderer.pending = false;
 
 			if (FE.View.requestZoom) {
-				var args = FE.View.requestZoom;
-				renderer.init = false;
-
+				var dz = FE.View.requestZoom;
 				delete FE.View.requestZoom;
-				return FE.View.zoom.apply(FE.View.zoom, args);
+				return FE.View.zoom.call(FE.View.zoom, dz);
 			}
 
 			if (S.resolution._factor < S.resolution.factor && !opts.preview && !FE.View.requestDrag && !buddhabrot) {

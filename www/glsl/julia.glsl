@@ -3,6 +3,7 @@ precision mediump float;
 uniform vec2 uResolution;
 uniform vec3 uCoordinates;
 uniform vec2 uPosition;
+uniform vec2 uOffset;
 uniform vec3 uColorScale;
 uniform vec3 uColorShift;
 uniform float uShadingScale;
@@ -11,7 +12,7 @@ uniform float uSmoothShading;
 
 void main()
 {
-    vec2 z = ((gl_FragCoord.xy/uResolution.xy-0.5) * uCoordinates.z * vec2(1,uResolution.y/uResolution.x) + uCoordinates.xy*vec2(1,-1)) * vec2(1,-1);
+    vec2 z = ((gl_FragCoord.xy/uResolution.xy-0.5+uOffset) * uCoordinates.z * vec2(1,uResolution.y/uResolution.x) + uCoordinates.xy);
     vec2 c = uPosition;
    
     float n = 0.0;

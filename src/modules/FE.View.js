@@ -32,39 +32,38 @@
 		/* ====== ZOOM ====== */
 		/* ================== */
 
-		function zoom(x, y, dz) {
+		function zoom(dz) {
 
 			if (FE.Settings.fractal.indexOf("Buddhabrot") != -1) { return; }
-			if (zoom.pending || FE.Renderer.pending) { FE.View.requestZoom = [x,y,dz]; return; }
-
-			zoom.pending = true;
+			if (FE.Renderer.pending) { FE.View.requestZoom = dz; return; }
 
 			var S = FE.Settings;
+			var C = S.coordinates;
+			var O = S.offset;
 			var W = window.innerWidth;
 			var H = window.innerHeight;
-			var A = W/H;
+			var x = (view.mouse.pos.x/W-0.5)*4;
+			var y = (view.mouse.pos.y/H-0.5)*4*H/W;
 
-			S.coordinates.z *= dz;
-
-			if (dz == 0.5) {
-				S.coordinates.x += (x/W-0.5)*S.coordinates.z;
-				S.coordinates.y += (y/H-0.5)*S.coordinates.z;
-			} else {
-				x = W/2;
-				y = H/2;
+			if (zoom.lx != x) {
+				O.x = x/-2*0.5;
+				C.x = C.x || 0;
+				C.x += (x-(zoom.lx||0))*C.z/4;
+				zoom.lx = x;
 			}
 
-			$(FE.Renderer.canvas).transition({
-			
-				scale: 1/dz,
-				x: -(x/W-0.5)*W/2,
-				y: -(y/H-0.5)*H/2*A
-			
-			}, function() {
-				zoom.pending = false;
-				FE.Renderer.render();
-				$(this).css("transform","none");
-			});
+			if (zoom.ly != y) {
+				O.y = y/(-2*H/W)*0.5;
+				C.y = C.y || 0;
+				C.y += (y-(zoom.ly||0))*C.z/4;
+				zoom.ly = y;
+			}
+
+			C.z *= dz < 0 ? 0.9 : 1.1;
+
+			FE.Renderer.render({ preview: true });
+			window.clearInterval(zoom.timeout);
+			zoom.timeout = window.setTimeout(FE.Renderer.render, 500);
 		}
 
 		/* ================== */
@@ -139,7 +138,10 @@
 
 		function mousemove(e) {
 
-			view.mouse.pos = { x: e.pageX, y: e.pageY };
+			view.mouse.pos = {
+				x: e.pageX, y: e.pageY,
+				z: FE.Settings.coordinates.z
+			};
 
 			if (e.ctrlKey && FE.Settings.fractal == "Julia") {
 				FE.Settings.position.x = (e.pageX / window.innerWidth - 0.5) * 2;
@@ -204,7 +206,7 @@
 
 		function mouseup(e) { view.mouse && view.mouse.drag && dragFinish(); }
 		function keyup(e) { e.keyCode == 17 && FE.Settings.fractal == "Julia" && FE.Renderer.render(); }
-		function scroll(e) { zoom(view.mouse.pos.x, view.mouse.pos.y, e.originalEvent.deltaY < 0 ? 0.5 : 2.0); }
+		function scroll(e) { zoom(e.originalEvent.deltaY); }
 
 		return {
 			init: init,

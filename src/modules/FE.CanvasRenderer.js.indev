@@ -1,0 +1,503 @@
+;(function(FE, window, undefined) {
+
+	"use strict";
+
+	FE.CanvasRenderer = (function() {
+
+		var ctx, worker;
+
+		/* ================== */
+		/* ====== INIT ====== */
+		/* ================== */
+
+		function init() {
+
+			window.URL = window.URL || window.webkitURL;
+			window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder;
+
+			ctx = document.getElementById("canvas").getContext("2d");
+
+			createWorker(workerMandelbrot, renderMandelbrot);
+			createWorker(workerBuddhabrot, renderBuddhabrot);
+			createWorker(workerAntiBuddhabrot, renderAntiBuddhabrot);
+			createWorker(workerJulia, renderJulia);
+		}
+
+		function createWorker(fn, onmessage) {
+
+			var src = fn.toString(), blob;
+			src = src.substring(src.indexOf("{")+1,src.lastIndexOf("}"));
+			
+			try {
+			    blob = new Blob([src], { type: "application/javascript" });
+			} catch (e) {
+			    blob = new BlobBuilder();
+			    blob.append(src);
+			    blob = blob.getBlob();
+			}
+
+			fn.worker = new Worker(URL.createObjectURL(blob));
+			fn.worker.onmessage = onmessage;
+		}
+
+		/* =============================== */
+		/* ====== WORKER_MANDELBROT ====== */
+		/* =============================== */
+
+		function workerMandelbrot() {
+
+			self.onmessage = function(e) {
+				var data = typeof e.data == "object" ? e.data : JSON.parse(e.data);
+				render(data);
+			};
+
+			function render(data) {
+
+				var S = data.settings,
+				    W = data.width,
+				    H = data.height,
+
+				    d = new Uint8ClampedArray(W*H*4),
+				    N = S.resolution.iterations,
+
+				    CX = S.coordinates.x,
+				    CY = S.coordinates.y,
+				    CZ = S.coordinates.z,
+
+				    RSC = S.shading.color.scale.r,
+				    GSC = S.shading.color.scale.g,
+				    BSC = S.shading.color.scale.b,
+
+				    RSH = S.shading.color.shift.r,
+				    GSH = S.shading.color.shift.g,
+				    BSH = S.shading.color.shift.b,
+
+				    SDS = S.shading.scale,
+				    STH = S.shading.smooth,
+
+				    r,i,t,n,_x,_y;
+
+				for(var y = 0; y < H; y++) {
+
+					_y = (y/H-0.5)*CZ*H/W+CY;
+
+					for(var x = 0; x < W; x++) {
+
+						_x = (x/W-0.5)*CZ+CX;
+
+						r=i=t=0;n=N;
+
+						while(r*r+i*i<128&&n--) {
+							r = r*r-i*i+_x;
+							i = 2*t*i+_y;t=r;
+						}
+						
+						if (STH)
+						{ n=n>0?(N-n-Math.log(Math.log(r*r+i*i)/Math.log(2))/Math.log(2))*SDS:0; }
+						else
+						{ n = n>0?(N-n+101)*SDS:0; }
+
+						i = (y*W+x)*4;
+
+						d[i++] = n&&Math.sin((n+RSH)*RSC)*255;
+						d[i++] = n&&Math.sin((n+GSH)*GSC)*255;
+						d[i++] = n&&Math.sin((n+BSH)*BSC)*255;
+						d[i++] = 255;
+					}
+				}
+
+				var json = { data: d, width: W, height: H };
+				self.postMessage(json);
+			}
+		}
+
+		/* =============================== */
+		/* ====== WORKER_BUDDHABROT ====== */
+		/* =============================== */
+
+		function workerBuddhabrot() {
+
+			self.onmessage = function(e) {
+				var data = typeof e.data == "object" ? e.data : JSON.parse(e.data);
+				render(data);
+			};
+
+			function render(data) {
+
+				var S = data.settings;
+				var W = data.width;
+				var H = data.height;
+
+				var d = new Uint8ClampedArray(W*H*4),
+					A = [],
+				    N = S.resolution.iterations,
+				    B = S.resolution.buddhaEscape,
+				    R = S.resolution._factor,
+
+				    CX = S.coordinates.x,
+				    CY = S.coordinates.y,
+				    CZ = S.coordinates.z,
+
+				    RSC = S.shading.color.scale.r,
+				    GSC = S.shading.color.scale.g,
+				    BSC = S.shading.color.scale.b,
+
+				    RSH = S.shading.color.shift.r,
+				    GSH = S.shading.color.shift.g,
+				    BSH = S.shading.color.shift.b,
+
+				    SDS = S.shading.scale,
+				    STH = S.shading.smooth,
+
+				    r,i,j,k,l,t,n,_x,_y,x,y;
+
+				for(y = 0; y < H; y++) {
+
+					_y = (y/H-0.5)*CZ+CY;
+
+					for(x = 0; x < W; x++) {
+
+						_x = (x/W-0.5)*CZ+CX;
+
+						if (_x*_x+_y*_y>2) { continue; }
+
+						r=i=t=0;n=N;
+
+						while(r*r+i*i<2&&n--) {
+							r = r*r-i*i+_x;
+							i = 2*t*i+_y;t=r;
+						}
+
+						n<(N-B)&&r*r+i*i>2 && A.push([_x,_y]);
+					}
+				}
+
+				l = 1/Math.log(N)*255;
+
+				for(k=A.length;k--;) {
+
+					x = A[k][0];
+					y = A[k][1];
+					r=i=t=0;n=N;
+
+					while(r*r+i*i<2&&n--) {
+
+						j=(~~((r+2)/4*H+0.5)*W+~~((i*H/W+2)/4*W+0.5))*4;
+						d[j]=d[j+1]=d[j+2]=d[j+2]+l;d[j+3]=255;
+
+						r = r*r-i*i+x;
+						i = 2*t*i+y;t=r;
+					}
+				}
+
+				var json = { data: d, width: W, height: H };
+				self.postMessage(json);
+			}
+		}
+
+		/* ==================================== */
+		/* ====== WORKER_ANTI_BUDDHABROT ====== */
+		/* ==================================== */
+
+		function workerAntiBuddhabrot() {
+
+			self.onmessage = function(e) {
+				var data = typeof e.data == "object" ? e.data : JSON.parse(e.data);
+				render(data);
+			};
+
+			function render(data) {
+
+				var S = data.settings;
+				var W = data.width;
+				var H = data.height;
+
+				var d = new Uint8ClampedArray(W*H*4),
+					A = [],
+				    N = S.resolution.iterations,
+
+				    CX = S.coordinates.x,
+				    CY = S.coordinates.y,
+				    CZ = S.coordinates.z,
+
+				    RSC = S.shading.color.scale.r,
+				    GSC = S.shading.color.scale.g,
+				    BSC = S.shading.color.scale.b,
+
+				    RSH = S.shading.color.shift.r,
+				    GSH = S.shading.color.shift.g,
+				    BSH = S.shading.color.shift.b,
+
+				    SDS = S.shading.scale,
+				    STH = S.shading.smooth,
+
+				    r,i,j,k,l,t,n,_x,_y,x,y;
+
+				for(y = 0; y < H; y++) {
+
+					_y = (y/H-0.5)*CZ+CY;
+
+					for(x = 0; x < W; x++) {
+
+						_x = (x/W-0.5)*CZ+CX;
+
+						if (_x*_x+_y*_y>2) { continue; }
+
+						r=i=t=0;n=N;
+
+						while(r*r+i*i<2&&n--) {
+							r = r*r-i*i+_x;
+							i = 2*t*i+_y;t=r;
+						}
+
+						r*r+i*i<2 && A.push([_x,_y]);
+					}
+				}
+
+				l = 1/Math.log(W*H*H/W+N)*50;
+
+				for(k=A.length;k--;) {
+
+					x = A[k][0];
+					y = A[k][1];
+					r=i=t=0;n=N;
+
+					while(r*r+i*i<2&&n--) {
+
+						j=(~~((r+2)/4*H+0.5)*W+~~((i*H/W+2)/4*W+0.5))*4;
+						d[j]=d[j+1]=d[j+2]=d[j+2]+l;d[j+3]=255;
+
+						r = r*r-i*i+x;
+						i = 2*t*i+y;t=r;
+					}
+				}
+
+				var json = { data: d, width: W, height: H };
+				self.postMessage(json);
+			}
+		}
+
+		/* ========================== */
+		/* ====== WORKER_JULIA ====== */
+		/* ========================== */
+
+		function workerJulia() {
+
+			self.onmessage = function(e) {
+				var data = typeof e.data == "object" ? e.data : JSON.parse(e.data);
+				render(data);
+			};
+
+			function render(data) {
+
+				var S = data.settings;
+				var W = data.width;
+				var H = data.height;
+
+				var d = new Uint8ClampedArray(W*H*4),
+				    N = S.resolution.iterations,
+
+				    CX = S.coordinates.x,
+				    CY = S.coordinates.y,
+				    CZ = S.coordinates.z,
+
+				    PX = S.position.x,
+				    PY = S.position.y,
+
+				    RSC = S.shading.color.scale.r,
+				    GSC = S.shading.color.scale.g,
+				    BSC = S.shading.color.scale.b,
+
+				    RSH = S.shading.color.shift.r,
+				    GSH = S.shading.color.shift.g,
+				    BSH = S.shading.color.shift.b,
+
+				    SDS = S.shading.scale,
+				    STH = S.shading.smooth,
+
+				    r,i,t,n,_y,_x;
+
+				for(var y = 0; y < H; y++) {
+
+					_y = (y/H-0.5)*CZ*H/W+CY;
+
+					for(var x = 0; x < W; x++) {
+
+						_x = (x/W-0.5)*CZ+CX;
+
+						r=t=_x;i=_y;n=N;
+
+						while(r*r+i*i<128&&n--) {
+							r = r*r-i*i+PX;
+							i = 2*t*i+PY;t=r;
+						}
+						
+						if (STH)
+						{ n=n>0?(N-n-Math.log(Math.log(r*r+i*i)/Math.log(2))/Math.log(2))*SDS:0; }
+						else
+						{ n = n>0?(N-n+101)*SDS:0; }
+
+						i = (y*W+x)*4;
+
+						d[i++] = n&&Math.sin((n+RSH)*RSC)*255;
+						d[i++] = n&&Math.sin((n+GSH)*GSC)*255;
+						d[i++] = n&&Math.sin((n+BSH)*BSC)*255;
+						d[i++] = 255;
+					}
+				}
+
+				var json = { data: d, width: W, height: H };
+				self.postMessage(json);
+			}
+		}
+
+		/* =============================== */
+		/* ====== RENDER_MANDELBROT ====== */
+		/* =============================== */
+
+		function renderMandelbrot(e) {
+
+			if (e && e.data) {
+
+				var data = typeof e.data == "object" ? e.data : JSON.parse(e.data);
+				var imageData = ctx.createImageData(data.width,data.height);
+
+				ctx.canvas.width = data.width;
+				ctx.canvas.height = data.height;
+				
+				imageData.data.set(data.data);
+				ctx.putImageData(imageData,0,0);
+
+				if (renderMandelbrot.pending.length) {
+					workerMandelbrot.worker.postMessage(renderMandelbrot.pending.shift());
+				}
+
+				if (!renderMandelbrot.pending.length)
+					{renderMandelbrot.pending=0;}
+
+			} else {
+
+				var init = false;
+
+				if (!renderMandelbrot.pending) { init = true; renderMandelbrot.pending = []; }
+
+				renderMandelbrot.pending.push({
+					settings: FE.Settings,
+					width: ~~(window.innerWidth * FE.Settings.resolution._factor),
+					height: ~~(window.innerHeight * FE.Settings.resolution._factor)
+				});
+
+				if (init)
+				{workerMandelbrot.worker.postMessage(renderMandelbrot.pending.shift());}
+			}
+		}
+
+		/* =============================== */
+		/* ====== RENDER_BUDDHABROT ====== */
+		/* =============================== */
+
+
+		function renderBuddhabrot(e) {
+console.log(1);
+			if (e && e.data) {
+
+				var data = typeof e.data == "object" ? e.data : JSON.parse(e.data);
+				var imageData = ctx.createImageData(data.width,data.height);
+
+				ctx.canvas.width = data.width;
+				ctx.canvas.height = data.height;
+				
+				imageData.data.set(data.data);
+				ctx.putImageData(imageData,0,0);
+
+				if (renderBuddhabrot.pending.length) {
+					workerBuddhabrot.worker.postMessage(renderBuddhabrot.pending.shift());
+				}
+
+				if (!renderBuddhabrot.pending.length)
+					{renderBuddhabrot.pending=0;}
+
+			} else {
+
+				var init = false;
+
+				if (!renderBuddhabrot.pending) { init = true; renderBuddhabrot.pending = []; }
+
+				renderBuddhabrot.pending.push({
+					settings: FE.Settings,
+					width: ~~(window.innerWidth * FE.Settings.resolution._factor),
+					height: ~~(window.innerHeight * FE.Settings.resolution._factor)
+				});
+
+				if (init)
+				{workerBuddhabrot.worker.postMessage(renderBuddhabrot.pending.shift());}
+			}
+		}
+
+		/* ==================================== */
+		/* ====== RENDER_ANTI_BUDDHABROT ====== */
+		/* ==================================== */
+
+		function renderAntiBuddhabrot(e) {
+
+			if (e) {
+
+				var data = typeof e.data == "object" ? e.data : JSON.parse(e.data);
+				var imageData = ctx.createImageData(W,H);
+
+				imageData.data.set(data.data);
+				ctx.putImageData(imageData,0,0);
+
+			} else {
+
+				var S = FE.Settings;
+				var W = ~~(ctx.canvas.width = window.innerWidth * S.resolution._factor);
+				var H = ~~(ctx.canvas.height = window.innerHeight * S.resolution._factor);
+
+				workerAntiBuddhabrot.worker.postMessage({
+					settings: FE.Settings,
+					width: W,
+					height: H
+				});
+			}
+		}
+
+		/* ========================== */
+		/* ====== RENDER_JULIA ====== */
+		/* ========================== */
+
+		function renderJulia(e) {
+
+			if (e) {
+
+				var data = typeof e.data == "object" ? e.data : JSON.parse(e.data);
+				var imageData = ctx.createImageData(W,H);
+
+				imageData.data.set(data.data);
+				ctx.putImageData(imageData,0,0);
+
+			} else {
+
+				var S = FE.Settings;
+				var W = ~~(ctx.canvas.width = window.innerWidth * S.resolution._factor);
+				var H = ~~(ctx.canvas.height = window.innerHeight * S.resolution._factor);
+
+				workerJulia.worker.postMessage({
+					settings: FE.Settings,
+					width: W,
+					height: H
+				});
+			}
+		}
+
+		return {
+			init: init,
+			renderMandelbrot: renderMandelbrot,
+			renderBuddhabrot: renderBuddhabrot,
+			renderAntiBuddhabrot: renderAntiBuddhabrot,
+			renderJulia: renderJulia,
+		}
+
+	}());
+
+}(window.FE || {}, window));

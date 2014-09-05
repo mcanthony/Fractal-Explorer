@@ -76,6 +76,7 @@
 			pr.uResolution = gl.getUniformLocation(pr, "uResolution");
 			pr.uIterations = gl.getUniformLocation(pr, "uIterations");
 			pr.uCoordinates = gl.getUniformLocation(pr, "uCoordinates");
+			pr.uOffset = gl.getUniformLocation(pr, "uOffset");
 			pr.uPosition = gl.getUniformLocation(pr, "uPosition");
 			pr.uColorScale = gl.getUniformLocation(pr, "uColorScale");
 			pr.uColorShift = gl.getUniformLocation(pr, "uColorShift");
@@ -106,8 +107,10 @@
 			gl.uniform1f(pr.uSmoothShading, Number(S.shading.smooth));
 			gl.uniform1f(pr.uShadingScale, S.shading.scale);
 
-			gl.uniform3fv(pr.uCoordinates, new Float32Array([S.coordinates.x,S.coordinates.y,S.coordinates.z]));
-			gl.uniform2fv(pr.uPosition, new Float32Array([S.position.x,S.position.y]));
+			gl.uniform3fv(pr.uCoordinates, new Float32Array([S.coordinates.x,-S.coordinates.y,S.coordinates.z]));
+			gl.uniform2fv(pr.uPosition, new Float32Array([S.position.x,-S.position.y]));
+			gl.uniform2fv(pr.uOffset, new Float32Array([S.offset.x,-S.offset.y]))
+
 			gl.uniform3f(pr.uColorScale, S.shading.color.scale.r, S.shading.color.scale.g, S.shading.color.scale.b);
 			gl.uniform3f(pr.uColorShift, S.shading.color.shift.r, S.shading.color.shift.g, S.shading.color.shift.b);
 

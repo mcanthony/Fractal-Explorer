@@ -33,6 +33,9 @@
 			    CY = S.coordinates.y,
 			    CZ = S.coordinates.z,
 
+			    OX = S.offset.x,
+			    OY = S.offset.y,
+
 			    RSC = S.shading.color.scale.r,
 			    GSC = S.shading.color.scale.g,
 			    BSC = S.shading.color.scale.b,
@@ -48,11 +51,11 @@
 
 			for(var y = 0; y < H; y++) {
 
-				_y = (y/H-0.5)*CZ*H/W+CY;
+				_y = (y/H-0.5+OY)*CZ*H/W+CY;
 
 				for(var x = 0; x < W; x++) {
 
-					_x = (x/W-0.5)*CZ+CX;
+					_x = (x/W-0.5+OX)*CZ+CX;
 
 					r=i=t=0;n=N;
 
@@ -90,8 +93,9 @@
 
 			var imageData = ctx.createImageData(W,H),
 
-				d = imageData.data,
 				A = [],
+				d = imageData.data,
+
 			    N = S.resolution.iterations,
 			    B = S.resolution.buddhaEscape,
 			    R = S.resolution._factor,
@@ -99,6 +103,9 @@
 			    CX = S.coordinates.x,
 			    CY = S.coordinates.y,
 			    CZ = S.coordinates.z,
+
+			    OX = S.offset.x,
+			    OY = S.offset.y,
 
 			    RSC = S.shading.color.scale.r,
 			    GSC = S.shading.color.scale.g,
@@ -115,11 +122,11 @@
 
 			for(y = 0; y < H; y++) {
 
-				_y = (y/H-0.5)*CZ+CY;
+				_y = (y/H-0.5+OY)*CZ+CY;
 
 				for(x = 0; x < W; x++) {
 
-					_x = (x/W-0.5)*CZ+CX;
+					_x = (x/W-0.5+OX)*CZ+CX;
 
 					if (_x*_x+_y*_y>2) { continue; }
 
@@ -166,14 +173,17 @@
 			var H = ~~(ctx.canvas.height = window.innerHeight * S.resolution._factor);
 
 			var imageData = ctx.createImageData(W,H),
-
-				d = imageData.data,
+				
 				A = [],
+				d = imageData.data,
 			    N = S.resolution.iterations,
 
 			    CX = S.coordinates.x,
 			    CY = S.coordinates.y,
 			    CZ = S.coordinates.z,
+
+			    OX = S.offset.x,
+			    OY = S.offset.y,
 
 			    RSC = S.shading.color.scale.r,
 			    GSC = S.shading.color.scale.g,
@@ -190,11 +200,11 @@
 
 			for(y = 0; y < H; y++) {
 
-				_y = (y/H-0.5)*CZ+CY;
+				_y = (y/H-0.5+OY)*CZ+CY;
 
 				for(x = 0; x < W; x++) {
 
-					_x = (x/W-0.5)*CZ+CX;
+					_x = (x/W-0.5+OX)*CZ+CX;
 
 					if (_x*_x+_y*_y>2) { continue; }
 
@@ -252,6 +262,9 @@
 			    PX = S.position.x,
 			    PY = S.position.y,
 
+			    OX = S.offset.x,
+			    OY = S.offset.y,
+
 			    RSC = S.shading.color.scale.r,
 			    GSC = S.shading.color.scale.g,
 			    BSC = S.shading.color.scale.b,
@@ -267,11 +280,11 @@
 
 			for(var y = 0; y < H; y++) {
 
-				_y = (y/H-0.5)*CZ*H/W+CY;
+				_y = (y/H-0.5+OY)*CZ*H/W+CY;
 
 				for(var x = 0; x < W; x++) {
 
-					_x = (x/W-0.5)*CZ+CX;
+					_x = (x/W-0.5+OX)*CZ+CX;
 
 					r=t=_x;i=_y;n=N;
 

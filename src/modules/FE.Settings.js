@@ -9,6 +9,7 @@
 		preset: "None",
 
 		coordinates: { x: 0, y: 0, z: 4 },
+		offset: { x: 0, y: 0, },
 		position: { x: 0, y: 0 },
 
 		resolution: {
