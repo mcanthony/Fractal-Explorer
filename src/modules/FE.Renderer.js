@@ -83,10 +83,11 @@
 			$webgl.style.display = $canvas.style.display = "none";
 			$webgl.className = $canvas.className = "";
 
-			var canvas = $("#"+which.toLowerCase());
-			canvas.css("display", "block").addClass("active");
+			var $activeCanvas = document.getElementById(which.toLowerCase());
+			$activeCanvas.style.display = "block";
+			$activeCanvas.className ="active";
 
-			FE.Renderer.canvas = canvas[0];
+			FE.Renderer.canvas = $activeCanvas;
 
 			if (init && !FE.Gui.readURL()) { FE.Presets.load("None"); }
 			else { render(); }

@@ -20,15 +20,15 @@
 			view.mouse.pos.x = window.innerWidth/2;
 			view.mouse.pos.y = window.innerHeight/2;
 
-			$("#container")
-			.on("mousedown", mousedown)
-			.on("mousemove", mousemove)
-			.on("mouseup", mouseup)
-			.on("contextmenu", function(){ return false });
+			var $container = document.getElementById("container");
+			$container.addEventListener("mousedown", mousedown, false);
+			$container.addEventListener("mousemove", mousemove, false);
+			$container.addEventListener("mouseup", mouseup, false);
+			$container.addEventListener("contextmenu", function(){ return false }, false);
 
-			$(document.body)
-			.on("keyup", keyup)
-			.on("mousewheel", scroll);
+			document.body.addEventListener("keyup", keyup, false);
+			document.body.addEventListener("mousewheel", scroll, false);
+			document.body.addEventListener("DOMMouseScroll", scroll, false);
 		}
 
 		/* ================== */
@@ -62,7 +62,7 @@
 				zoom.ly = y;
 			}
 
-			C.z *= dz < 0 ? 0.9 : 1.1;
+			C.z *= dz > 0 ? 0.9 : 1.1;
 
 			FE.Renderer.render({ preview: true });
 			window.clearInterval(zoom.timeout);
@@ -80,7 +80,7 @@
 			FE.View.requestDrag = true;
 
 			if (!FE.Settings.resolution.renderOnDrag) {
-				$(FE.Renderer.canvas).css({ transform: "translate(" + dx + "px," + dy + "px)" });
+				FE.Renderer.canvas.style.transform = "translate(" + dx + "px," + dy + "px)";
 				return;
 			}
 
@@ -111,7 +111,7 @@
 			
 			if (view.mouse.drag.x || view.mouse.drag.y) {
 				FE.Renderer.render();
-				$(FE.Renderer.canvas).css("transform","none");
+				FE.Renderer.canvas.style.transform = "none";
 			}
 
 			delete view.mouse.dragStart;
@@ -210,7 +210,7 @@
 
 		function mouseup(e) { view.mouse && view.mouse.drag && dragFinish(); }
 		function keyup(e) { e.keyCode == 17 && FE.Settings.fractal == "Julia" && FE.Renderer.render(); }
-		function scroll(e) { zoom(e.originalEvent.deltaY); }
+		function scroll(e) { zoom(Math.max(-1,Math.min(1,(e.wheelDelta||-e.detail)))); }
 
 		return {
 			init: init,

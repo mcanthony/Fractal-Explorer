@@ -21,9 +21,6 @@ module.exports = function(grunt) {
 			dist: {
 				src: [
 					"src/lib/dat.gui.js",
-					"src/lib/jquery.js",
-					"src/lib/jquery.*.js",
-					
 					"src/init.js",
 					"src/modules/*.js",
 					"src/complete.js"
