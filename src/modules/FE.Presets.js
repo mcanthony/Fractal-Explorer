@@ -40,6 +40,9 @@
 			S.coordinates.x = p[0]
 			S.coordinates.y = p[1];
 			S.coordinates.z = p[2];
+
+			S.offset.x = 0;
+			S.offset.y = 0;
 			
 			S.resolution.iterations = p[3];
 			S.shading.scale = p[4];

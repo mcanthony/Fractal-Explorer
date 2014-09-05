@@ -17,6 +17,9 @@
 
 		function init() {
 
+			view.mouse.pos.x = window.innerWidth/2;
+			view.mouse.pos.y = window.innerHeight/2;
+
 			$("#container")
 			.on("mousedown", mousedown)
 			.on("mousemove", mousemove)
@@ -169,6 +172,7 @@
 			var url = window.location.protocol + '//' + window.location.host + window.location.pathname;
 			window.history.replaceState(null, document.title, url);
 
+			zoom.lx = zoom.ly = null;
 			FE.Presets.load("None");
 		}
 
