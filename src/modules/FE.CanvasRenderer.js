@@ -98,35 +98,20 @@
 
 			    N = S.resolution.iterations,
 			    B = S.resolution.buddhaEscape,
-			    R = S.resolution._factor,
 
 			    CX = S.coordinates.x,
 			    CY = S.coordinates.y,
 			    CZ = S.coordinates.z,
 
-			    OX = S.offset.x,
-			    OY = S.offset.y,
-
-			    RSC = S.shading.color.scale.r,
-			    GSC = S.shading.color.scale.g,
-			    BSC = S.shading.color.scale.b,
-
-			    RSH = S.shading.color.shift.r,
-			    GSH = S.shading.color.shift.g,
-			    BSH = S.shading.color.shift.b,
-
-			    SDS = S.shading.scale,
-			    STH = S.shading.smooth,
-
 			    r,i,j,k,l,t,n,_x,_y,x,y;
 
 			for(y = 0; y < H; y++) {
 
-				_y = (y/H-0.5+OY)*CZ+CY;
+				_y = (y/H-0.5)*CZ+CY;
 
 				for(x = 0; x < W; x++) {
 
-					_x = (x/W-0.5+OX)*CZ+CX;
+					_x = (x/W-0.5)*CZ+CX;
 
 					if (_x*_x+_y*_y>2) { continue; }
 
@@ -139,8 +124,6 @@
 
 					n<(N-B)&&r*r+i*i>2 && A.push([_x,_y]);
 				}
-
-				if (_x*_x+_y*_y>2) { continue; }
 			}
 
 			l = 1/Math.log(N)*255;
@@ -184,29 +167,15 @@
 			    CY = S.coordinates.y,
 			    CZ = S.coordinates.z,
 
-			    OX = S.offset.x,
-			    OY = S.offset.y,
-
-			    RSC = S.shading.color.scale.r,
-			    GSC = S.shading.color.scale.g,
-			    BSC = S.shading.color.scale.b,
-
-			    RSH = S.shading.color.shift.r,
-			    GSH = S.shading.color.shift.g,
-			    BSH = S.shading.color.shift.b,
-
-			    SDS = S.shading.scale,
-			    STH = S.shading.smooth,
-
 			    r,i,j,k,l,t,n,_x,_y,x,y;
 
 			for(y = 0; y < H; y++) {
 
-				_y = (y/H-0.5+OY)*CZ+CY;
+				_y = (y/H-0.5)*CZ+CY;
 
 				for(x = 0; x < W; x++) {
 
-					_x = (x/W-0.5+OX)*CZ+CX;
+					_x = (x/W-0.5)*CZ+CX;
 
 					if (_x*_x+_y*_y>2) { continue; }
 
@@ -219,8 +188,6 @@
 
 					r*r+i*i<2 && A.push([_x,_y]);
 				}
-
-				if (_x*_x+_y*_y>2) { continue; }
 			}
 
 			l = 1/Math.log(W*H*H/W+N)*50;
