@@ -211,6 +211,25 @@
 			a.click(); a.remove();
 		}
 
+		/* ========================= */
+		/* ====== CHANGE_MODE ====== */
+		/* ========================= */
+
+		function changeMode(mode, w, h) {
+
+			var s = document.getElementById(FE.Settings.renderer.toLowerCase()).style;
+
+			if (mode == "fullscreen") {
+				s.top = "0px"; s.left = "0px";
+				s.width = "100%"; s.height = "100%";
+			} else if (mode == "center") {
+				s.top =  Math.round(window.innerHeight/2-h/2) + "px";
+				s.left = Math.round(window.innerWidth/2-w/2) + "px";
+				s.width = w + "px";
+				s.height = h + "px";
+			}
+		}
+
 		/* ==================== */
 		/* ====== EVENTS ====== */
 		/* ==================== */
@@ -224,6 +243,7 @@
 			reset: reset,
 			zoom: zoom,
 			share: share,
+			changeMode: changeMode,
 			download: download
 		};
 

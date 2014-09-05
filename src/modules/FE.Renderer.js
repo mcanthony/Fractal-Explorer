@@ -15,7 +15,7 @@
 			$canvas = document.getElementById("canvas");
 			$webgl = document.getElementById("webgl");
 
-			$activeCanvas = document.getElementById(FE.Settings.renderer.toLowerCase())
+			$activeCanvas = document.getElementById(FE.Settings.renderer.toLowerCase());
 			$activeCanvas.className = "active";
 
 			window.addEventListener("resize", resize);
@@ -31,7 +31,7 @@
 			opts = opts || {};
 
 			var S = FE.Settings;
-			var isBuddha = S.fractal.indexOf("Buddhabrot") != -1;
+			var isBuddha = ~S.fractal.indexOf("Buddhabrot");
 			var renderFN = renderer["render" + S.fractal];
 
 			// Renderer not available
@@ -106,13 +106,17 @@
 
 		function resize() {
 
-			var canvas = document.querySelector("canvas.active");
+			var C = document.querySelector("canvas.active");
 			var W = window.innerWidth;
 			var H = window.innerHeight;
+			var D = window.parseInt(C.style.width,10);
+
+			if (~FE.Settings.fractal.indexOf("Buddhabrot"))
+			{ return FE.View.changeMode("center",D,D); }
 
 			// Update canvas size
-			canvas.width = ~~(W * FE.Settings.resolution._factor);
-			canvas.height = ~~(H * FE.Settings.resolution._factor);
+			C.width = ~~(W * FE.Settings.resolution._factor);
+			C.height = ~~(H * FE.Settings.resolution._factor);
 
 			// Update webgl viewport
 			if (FE.Settings.renderer == "WebGL")

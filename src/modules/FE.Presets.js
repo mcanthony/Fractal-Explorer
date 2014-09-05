@@ -52,6 +52,7 @@
 				S.position.y = p[6];
 			}
 
+			FE.View.changeMode("fullscreen");
 			FE.Gui.update();
 			FE.Renderer.render();
 		}

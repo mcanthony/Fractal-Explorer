@@ -88,16 +88,19 @@
 		function renderBuddhabrot() {
 
 			var S = FE.Settings;
-			var W = ~~(ctx.canvas.width = window.innerWidth * S.resolution._factor);
-			var H = ~~(ctx.canvas.height = window.innerHeight * S.resolution._factor);
+			var D = 1000;
 
-			var imageData = ctx.createImageData(W,H),
+			FE.View.changeMode("center", D, D);
 
-				A = [],
+			ctx.canvas.width = D;
+			ctx.canvas.height = D;
+
+			var imageData = ctx.createImageData(D,D),
+
 				d = imageData.data,
-
 			    N = S.resolution.iterations,
 			    B = S.resolution.buddhaEscape,
+				A = [],
 
 			    CX = S.coordinates.x,
 			    CY = S.coordinates.y,
@@ -105,13 +108,13 @@
 
 			    r,i,j,k,l,t,n,_x,_y,x,y;
 
-			for(y = 0; y < H; y++) {
+			for(y = 0; y < D; y++) {
 
-				_y = (y/H-0.5)*CZ+CY;
+				_y = (y/D-0.5)*CZ+CY;
 
-				for(x = 0; x < W; x++) {
+				for(x = 0; x < D; x++) {
 
-					_x = (x/W-0.5)*CZ+CX;
+					_x = (x/D-0.5)*CZ+CX;
 
 					if (_x*_x+_y*_y>2) { continue; }
 
@@ -136,7 +139,7 @@
 
 				while(r*r+i*i<2&&n--) {
 
-					j=(~~((r+2)/4*H+0.5)*W+~~((i*H/W+2)/4*W+0.5))*4;
+					j=(~~((r+2)/4*D+0.5)*D+~~((i+2)/4*D+0.5))*4;
 					d[j]=d[j+1]=d[j+2]=d[j+2]+l;d[j+3]=255;
 
 					r = r*r-i*i+x;
@@ -154,14 +157,18 @@
 		function renderAntiBuddhabrot() {
 
 			var S = FE.Settings;
-			var W = ~~(ctx.canvas.width = window.innerWidth * S.resolution._factor);
-			var H = ~~(ctx.canvas.height = window.innerHeight * S.resolution._factor);
+			var D = 1000;
 
-			var imageData = ctx.createImageData(W,H),
+			FE.View.changeMode("center", D, D);
+
+			ctx.canvas.width = D;
+			ctx.canvas.height = D;
+
+			var imageData = ctx.createImageData(D,D),
 				
-				A = [],
 				d = imageData.data,
 			    N = S.resolution.iterations,
+				A = [],
 
 			    CX = S.coordinates.x,
 			    CY = S.coordinates.y,
@@ -169,13 +176,13 @@
 
 			    r,i,j,k,l,t,n,_x,_y,x,y;
 
-			for(y = 0; y < H; y++) {
+			for(y = 0; y < D; y++) {
 
-				_y = (y/H-0.5)*CZ+CY;
+				_y = (y/D-0.5)*CZ+CY;
 
-				for(x = 0; x < W; x++) {
+				for(x = 0; x < D; x++) {
 
-					_x = (x/W-0.5)*CZ+CX;
+					_x = (x/D-0.5)*CZ+CX;
 
 					if (_x*_x+_y*_y>2) { continue; }
 
@@ -190,7 +197,7 @@
 				}
 			}
 
-			l = 1/Math.log(W*H*H/W+N)*50;
+			l = 1/Math.log(D*D+N)*50;
 
 			for(k=A.length;k--;) {
 
@@ -200,7 +207,7 @@
 
 				while(r*r+i*i<2&&n--) {
 
-					j=(~~((r+2)/4*H+0.5)*W+~~((i*H/W+2)/4*W+0.5))*4;
+					j=(~~((r+2)/4*D+0.5)*D+~~((i+2)/4*D+0.5))*4;
 					d[j]=d[j+1]=d[j+2]=d[j+2]+l;d[j+3]=255;
 
 					r = r*r-i*i+x;
