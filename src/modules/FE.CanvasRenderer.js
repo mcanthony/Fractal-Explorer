@@ -130,7 +130,7 @@
 				}
 			}
 
-			l = 1/Math.log(N)*255;
+			l = 1/Math.log(N-B)*255;
 
 			for(k=A.length;k--;) {
 
