@@ -88,33 +88,30 @@
 		function renderBuddhabrot() {
 
 			var S = FE.Settings;
-			var D = ~~(1000/(S.coordinates.z/4)+0.5);
+			var R = ~~(1000/(S.coordinates.z/4)+0.5);
 
-			FE.View.changeMode("center", D, D);
-			D = ~~(D*S.resolution.factor+0.5);
+			FE.View.changeMode("center", R, R);
+			R = ~~(R*S.resolution.factor+0.5);
 
-			ctx.canvas.width = D;
-			ctx.canvas.height = D;
+			ctx.canvas.width = R;
+			ctx.canvas.height = R;
 
-			var imageData = ctx.createImageData(D,D),
-
-				d = imageData.data,
+			var imageData = ctx.createImageData(R,R),
+				
+				D = imageData.data,
 			    N = S.resolution.iterations,
 			    B = S.resolution.buddhaEscape,
-				A = [],
+				F = 1/Math.log(R+N)*127,
 
-			    r,i,j,k,l,t,n,_x,_y,x,y;
+			    r,i,j,t,n,_x,_y,x,y;
 
-			// black background
-			for (i=d.length-1; i>0; i-=4) { d[i]=255; }
+			for(y = 0; y < R; y++) {
 
-			for(y = 0; y < D; y++) {
+				_y = (y/R-0.5)*4;
 
-				_y = (y/D-0.5)*4;
+				for(x = 0; x < R; x++) {
 
-				for(x = 0; x < D; x++) {
-
-					_x = (x/D-0.5)*4;
+					_x = (x/R-0.5)*4;
 
 					if (_x*_x+_y*_y>2) { continue; }
 
@@ -125,25 +122,19 @@
 						i = 2*t*i+_y;t=r;
 					}
 
-					n<(N-B)&&r*r+i*i>2 && A.push([_x,_y]);
-				}
-			}
+					if(n<(N-B)&&r*r+i*i>2) {
 
-			l = 1/Math.log(D+N)*127;
+						r=i=t=0;n=N;
 
-			for(k=A.length;k--;) {
+						while(r*r+i*i<2&&n--) {
 
-				x = A[k][0];
-				y = A[k][1];
-				r=i=t=0;n=N;
+							j=(~~((r+2)/4*R+0.5)*R+~~((i+2)/4*R+0.5))*4;
+							D[j]=D[j+1]=D[j+2]=D[j]+F;D[j+3]=255;
 
-				while(r*r+i*i<2&&n--) {
-
-					j=(~~((r+2)/4*D+0.5)*D+~~((i+2)/4*D+0.5))*4;
-					d[j]=d[j+1]=d[j+2]=d[j]+l;
-
-					r = r*r-i*i+x;
-					i = 2*t*i+y;t=r;
+							r = r*r-i*i+_x;
+							i = 2*t*i+_y;t=r;
+						}
+					}
 				}
 			}
 
@@ -157,36 +148,29 @@
 		function renderAntiBuddhabrot() {
 
 			var S = FE.Settings;
-			var D = ~~(1000/(S.coordinates.z/4)+0.5);
+			var R = ~~(1000/(S.coordinates.z/4)+0.5);
 
-			FE.View.changeMode("center", D, D);
-			D = ~~(D*S.resolution.factor+0.5);
+			FE.View.changeMode("center", R, R);
+			R = ~~(R*S.resolution.factor+0.5);
 
-			ctx.canvas.width = D;
-			ctx.canvas.height = D;
+			ctx.canvas.width = R;
+			ctx.canvas.height = R;
 
-			var imageData = ctx.createImageData(D,D),
+			var imageData = ctx.createImageData(R,R),
 				
-				d = imageData.data,
+				D = imageData.data,
 			    N = S.resolution.iterations,
-				A = [],
+				F = 1/Math.log(R+N)*50,
 
-			    CX = S.coordinates.x,
-			    CY = S.coordinates.y,
-			    CZ = S.coordinates.z,
+			    r,i,j,t,n,_x,_y,x,y;
 
-			    r,i,j,k,l,t,n,_x,_y,x,y;
+			for(y = 0; y < R; y++) {
 
-			// black background
-			for (i=d.length-1; i>0; i-=4) { d[i]=255; }
+				_y = (y/R-0.5)*4;
 
-			for(y = 0; y < D; y++) {
+				for(x = 0; x < R; x++) {
 
-				_y = (y/D-0.5)*CZ+CY;
-
-				for(x = 0; x < D; x++) {
-
-					_x = (x/D-0.5)*CZ+CX;
+					_x = (x/R-0.5)*4;
 
 					if (_x*_x+_y*_y>2) { continue; }
 
@@ -197,25 +181,19 @@
 						i = 2*t*i+_y;t=r;
 					}
 
-					r*r+i*i<2 && A.push([_x,_y]);
-				}
-			}
+					if(r*r+i*i<2) {
 
-			l = 1/Math.log(D+N)*50;
+						r=i=t=0;n=N;
 
-			for(k=A.length;k--;) {
+						while(r*r+i*i<2&&n--) {
 
-				x = A[k][0];
-				y = A[k][1];
-				r=i=t=0;n=N;
+							j=(~~((r+2)/4*R+0.5)*R+~~((i+2)/4*R+0.5))*4;
+							D[j]=D[j+1]=D[j+2]=D[j]+F;D[j+3]=255;
 
-				while(r*r+i*i<2&&n--) {
-
-					j=(~~((r+2)/4*D+0.5)*D+~~((i+2)/4*D+0.5))*4;
-					d[j]=d[j+1]=d[j+2]=d[j+2]+l;d[j+3]=255;
-
-					r = r*r-i*i+x;
-					i = 2*t*i+y;t=r;
+							r = r*r-i*i+_x;
+							i = 2*t*i+_y;t=r;
+						}
+					}
 				}
 			}
 
