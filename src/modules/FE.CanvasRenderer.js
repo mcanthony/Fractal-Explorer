@@ -88,10 +88,10 @@
 		function renderBuddhabrot() {
 
 			var S = FE.Settings;
-			var D = 1000;
+			var D = ~~(1000/(S.coordinates.z/4)+0.5);
 
 			FE.View.changeMode("center", D, D);
-			D *= S.resolution.factor;
+			D = ~~(D*S.resolution.factor+0.5);
 
 			ctx.canvas.width = D;
 			ctx.canvas.height = D;
@@ -103,19 +103,18 @@
 			    B = S.resolution.buddhaEscape,
 				A = [],
 
-			    CX = S.coordinates.x,
-			    CY = S.coordinates.y,
-			    CZ = S.coordinates.z,
-
 			    r,i,j,k,l,t,n,_x,_y,x,y;
+
+			// black background
+			for (i=d.length-1; i>0; i-=4) { d[i]=255; }
 
 			for(y = 0; y < D; y++) {
 
-				_y = (y/D-0.5)*CZ+CY;
+				_y = (y/D-0.5)*4;
 
 				for(x = 0; x < D; x++) {
 
-					_x = (x/D-0.5)*CZ+CX;
+					_x = (x/D-0.5)*4;
 
 					if (_x*_x+_y*_y>2) { continue; }
 
@@ -130,7 +129,7 @@
 				}
 			}
 
-			l = 1/Math.log(N-B)*255;
+			l = 1/Math.log(D+N)*127;
 
 			for(k=A.length;k--;) {
 
@@ -141,7 +140,7 @@
 				while(r*r+i*i<2&&n--) {
 
 					j=(~~((r+2)/4*D+0.5)*D+~~((i+2)/4*D+0.5))*4;
-					d[j]=d[j+1]=d[j+2]=d[j+2]+l;d[j+3]=255;
+					d[j]=d[j+1]=d[j+2]=d[j]+l;
 
 					r = r*r-i*i+x;
 					i = 2*t*i+y;t=r;
@@ -158,10 +157,10 @@
 		function renderAntiBuddhabrot() {
 
 			var S = FE.Settings;
-			var D = 1000;
+			var D = ~~(1000/(S.coordinates.z/4)+0.5);
 
 			FE.View.changeMode("center", D, D);
-			D *= S.resolution.factor;
+			D = ~~(D*S.resolution.factor+0.5);
 
 			ctx.canvas.width = D;
 			ctx.canvas.height = D;
@@ -177,6 +176,9 @@
 			    CZ = S.coordinates.z,
 
 			    r,i,j,k,l,t,n,_x,_y,x,y;
+
+			// black background
+			for (i=d.length-1; i>0; i-=4) { d[i]=255; }
 
 			for(y = 0; y < D; y++) {
 
@@ -199,7 +201,7 @@
 				}
 			}
 
-			l = 1/Math.log(D*D+N)*50;
+			l = 1/Math.log(D+N)*50;
 
 			for(k=A.length;k--;) {
 
