@@ -4,6 +4,7 @@
 
 	FE.Settings = {
 
+		numWorkers: 8,
 		renderer: "Canvas",
 		fractal: "Mandelbrot",
 		preset: "None",

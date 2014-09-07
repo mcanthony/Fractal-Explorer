@@ -4,7 +4,7 @@
 
 	FE.WebGLRenderer = (function() {
 
-		var gl, instance = {};
+		var gl, shader = {}, instance = {};
 
 		/* ================== */
 		/* ====== INIT ====== */
@@ -42,7 +42,7 @@
 			var pr = gl.createProgram();
 
 			gl.shaderSource(vs, "attribute vec2 aPos;\nvoid main(){gl_Position=vec4(aPos.x,aPos.y,0.0,1.0);\n}");
-			gl.shaderSource(fs, eval("shader"+fractal+"()"));
+			gl.shaderSource(fs, shader[fractal]);
 
 			gl.compileShader(vs);
 			gl.compileShader(fs);
@@ -87,6 +87,8 @@
 			var H = ~~(gl.canvas.height = window.innerHeight * S.resolution._factor);
 			var pr = instance.programs[S.fractal];
 
+			gl.useProgram(pr);
+
 			gl.uniform2f(pr.uResolution, W, H);
 			gl.uniform1f(pr.uIterations, S.resolution.iterations);
 
@@ -108,122 +110,80 @@
 		/* ====== SHADER_MANDELBROT ====== */
 		/* =============================== */
 
-		function shaderMandelbrot() {
+		shader.Mandelbrot = "precision mediump float;\n"
 
-			return "precision mediump float;\n"
+		+ "uniform vec2 uResolution;\n"
+		+ "uniform vec3 uCoordinates;\n"
+		+ "uniform vec2 uOffset;\n"
+		+ "uniform vec3 uColorScale;\n"
+		+ "uniform vec3 uColorShift;\n"
+		+ "uniform float uShadingScale;\n"
+		+ "uniform float uIterations;\n"
+		+ "uniform float uSmoothShading;\n"
 
-			+ "uniform vec2 uResolution;\n"
-			+ "uniform vec3 uCoordinates;\n"
-			+ "uniform vec2 uOffset;\n"
-			+ "uniform vec3 uColorScale;\n"
-			+ "uniform vec3 uColorShift;\n"
-			+ "uniform float uShadingScale;\n"
-			+ "uniform float uIterations;\n"
-			+ "uniform float uSmoothShading;\n"
+		+ "void main()\n"
+		+ "{\n"
+		    + "vec2 z = vec2(0);\n"
+			+ "vec2 c = (gl_FragCoord.xy/uResolution.xy-0.5+uOffset) * uCoordinates.z * vec2(1,uResolution.y/uResolution.x);\n"
 
-			+ "void main()\n"
+		    + "float n = 0.0;\n"
+
+			+ "for(float i=0.0;i<1000.0;i+=1.0)\n"
 			+ "{\n"
-			    + "vec2 z = vec2(0);\n"
-				+ "vec2 c = (gl_FragCoord.xy/uResolution.xy-0.5+uOffset) * uCoordinates.z * vec2(1,uResolution.y/uResolution.x);\n"
+				+ "z = vec2(z.x*z.x-z.y*z.y,2.0*z.x*z.y)+c+uCoordinates.xy;\n"
+		        + "n = z.x*z.x+z.y*z.y;\n"
 
-			    + "float n = 0.0;\n"
-
-				+ "for(float i=0.0;i<1000.0;i+=1.0)\n"
-				+ "{\n"
-					+ "z = vec2(z.x*z.x-z.y*z.y,2.0*z.x*z.y)+c+uCoordinates.xy;\n"
-			        + "n = z.x*z.x+z.y*z.y;\n"
-
-			        + "if(n>128.0||i>uIterations)\n"
-			        + "{\n"
-			            + "if (uSmoothShading>0.0)\n"
-			            + "n = i>0.0?(i-log2(log2(z.x*z.x+z.y*z.y)))*uShadingScale:0.0;\n"
-			            + "else\n"
-			            + "n = i>0.0?(1000.0-i+101.0)*uShadingScale:0.0;\n"
-			            + "gl_FragColor=vec4(sin((n+uColorShift)*uColorScale),1);\n"
-			            + "break;\n"
-			        + "}\n"
-				+ "}\n"
-			+ "}";
-		}
+		        + "if(n>128.0||i>uIterations)\n"
+		        + "{\n"
+		            + "if (uSmoothShading>0.0)\n"
+		            + "n = i>0.0?(i-log2(log2(z.x*z.x+z.y*z.y)))*uShadingScale:0.0;\n"
+		            + "else\n"
+		            + "n = i>0.0?(1000.0-i+101.0)*uShadingScale:0.0;\n"
+		            + "gl_FragColor=vec4(sin((n+uColorShift)*uColorScale),1);\n"
+		            + "break;\n"
+		        + "}\n"
+			+ "}\n"
+		+ "}";
 
 		/* ========================== */
 		/* ====== SHADER_JULIA ====== */
 		/* ========================== */
 
-		function shaderJulia() {
+		shader.Julia = "precision mediump float;\n"
 
-			return "precision mediump float;\n"
+		+ "uniform vec2 uResolution;\n"
+		+ "uniform vec3 uCoordinates;\n"
+		+ "uniform vec2 uPosition;\n"
+		+ "uniform vec2 uOffset;\n"
+		+ "uniform vec3 uColorScale;\n"
+		+ "uniform vec3 uColorShift;\n"
+		+ "uniform float uShadingScale;\n"
+		+ "uniform float uIterations;\n"
+		+ "uniform float uSmoothShading;\n"
 
-			+ "uniform vec2 uResolution;\n"
-			+ "uniform vec3 uCoordinates;\n"
-			+ "uniform vec2 uPosition;\n"
-			+ "uniform vec2 uOffset;\n"
-			+ "uniform vec3 uColorScale;\n"
-			+ "uniform vec3 uColorShift;\n"
-			+ "uniform float uShadingScale;\n"
-			+ "uniform float uIterations;\n"
-			+ "uniform float uSmoothShading;\n"
+		+ "void main()\n"
+		+ "{\n"
+		    + "vec2 z = ((gl_FragCoord.xy/uResolution.xy-0.5+uOffset) * uCoordinates.z * vec2(1,uResolution.y/uResolution.x) + uCoordinates.xy);\n"
+		    + "vec2 c = uPosition;\n"
 
-			+ "void main()\n"
+		    + "float n = 0.0;\n"
+
+			+ "for(float i=0.0;i<1000.0;i+=1.0)\n"
 			+ "{\n"
-			    + "vec2 z = ((gl_FragCoord.xy/uResolution.xy-0.5+uOffset) * uCoordinates.z * vec2(1,uResolution.y/uResolution.x) + uCoordinates.xy);\n"
-			    + "vec2 c = uPosition;\n"
+				+ "z = vec2(z.x*z.x-z.y*z.y,2.0*z.x*z.y)+c;\n"
+		        + "n = z.x*z.x+z.y*z.y;\n"
 
-			    + "float n = 0.0;\n"
-
-				+ "for(float i=0.0;i<1000.0;i+=1.0)\n"
-				+ "{\n"
-					+ "z = vec2(z.x*z.x-z.y*z.y,2.0*z.x*z.y)+c;\n"
-			        + "n = z.x*z.x+z.y*z.y;\n"
-
-			        + "if(n>128.0||i>uIterations)\n"
-			        + "{\n"
-			            + "if (uSmoothShading>0.0)\n"
-			            + "n = i>0.0?(i-log2(log2(z.x*z.x+z.y*z.y)))*uShadingScale:0.0;\n"
-			            + "else\n"
-			            + "n = i>0.0?(1000.0-i+101.0)*uShadingScale:0.0;\n"
-			            + "gl_FragColor=vec4(sin((n+uColorShift)*uColorScale),1);\n"
-			            + "break;\n"
-			        + "}\n"
-				+ "}\n"
-			+ "}";
-		}
-
-		/* =============================== */
-		/* ====== RENDER_MANDELBROT ====== */
-		/* =============================== */
-
-		function renderMandelbrot() {
-			gl.useProgram(instance.programs.Mandelbrot);
-			render();
-		}
-
-		/* =============================== */
-		/* ====== RENDER_BUDDHABROT ====== */
-		/* =============================== */
-
-		function renderBuddhabrot() {
-			gl.useProgram(instance.programs.Buddhabrot);
-			render();
-		}
-
-		/* ==================================== */
-		/* ====== RENDER_ANTI_BUDDHABROT ====== */
-		/* ==================================== */
-
-		function renderAntiBuddhabrot() {
-			gl.useProgram(instance.programs.Buddhabrot);
-			render();
-		}
-
-		/* ========================== */
-		/* ====== RENDER_JULIA ====== */
-		/* ========================== */
-
-		function renderJulia() {
-			gl.useProgram(instance.programs.Julia);
-			render();
-		}
+		        + "if(n>128.0||i>uIterations)\n"
+		        + "{\n"
+		            + "if (uSmoothShading>0.0)\n"
+		            + "n = i>0.0?(i-log2(log2(z.x*z.x+z.y*z.y)))*uShadingScale:0.0;\n"
+		            + "else\n"
+		            + "n = i>0.0?(1000.0-i+101.0)*uShadingScale:0.0;\n"
+		            + "gl_FragColor=vec4(sin((n+uColorShift)*uColorScale),1);\n"
+		            + "break;\n"
+		        + "}\n"
+			+ "}\n"
+		+ "}";
 
 		/* ========================= */
 		/* ====== GET_CONTEXT ====== */
@@ -235,8 +195,7 @@
 
 		return {
 			init: init,
-			renderMandelbrot: renderMandelbrot,
-			renderJulia: renderJulia,
+			render: render,
 			getContext: getContext
 		}
 

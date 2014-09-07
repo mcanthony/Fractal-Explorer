@@ -65,9 +65,6 @@
 			C.z *= dz > 0 ? 0.9 : 1.1;
 			FE.Renderer.render({ preview: true });
 
-			// Render after 500 ms inactivity
-			window.clearInterval(zoom.timeout);
-			zoom.timeout = window.setTimeout(FE.Renderer.render, 500);
 		}
 
 		/* ================== */

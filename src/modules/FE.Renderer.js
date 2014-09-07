@@ -32,23 +32,15 @@
 
 			var S = FE.Settings;
 			var isBuddha = ~S.fractal.indexOf("Buddhabrot");
-			var renderFN = renderer["render" + S.fractal];
 
-			// Renderer not available
-			if (!renderFN) { return alert(S.renderer + " renderer not yet available for " + S.fractal); }
+			S.resolution._factor = 0.05;
+			!opts.preview && FE.Gui.update();
 
-			// Reset factor and update gui
-			if (!render.init && !FE.Renderer.pending) {
-
-				S.resolution._factor = isBuddha ? S.resolution.factor : S.resolution.factor/S.resolution.steps;
-				render.init = true;
-
-				!opts.preview && FE.Gui.update();
+			if (!isBuddha) {
+				FE.Renderer.pending = true;
+				renderer.render();
+				FE.Renderer.pending = false;
 			}
-
-			FE.Renderer.pending = true;
-			renderFN();
-			FE.Renderer.pending = false;
 
 			// Stop rendering when there is a zoom request
 			if (FE.View.requestZoom) {
@@ -57,13 +49,17 @@
 				return FE.View.zoom.call(FE.View.zoom, dz);
 			}
 
-			// Increase resolution and render again until max res is reached
-			if (S.resolution._factor < S.resolution.factor && !opts.preview && !FE.View.requestDrag && !isBuddha) {
+			window.clearTimeout(render.timeout);
 
-				S.resolution._factor = Math.min(S.resolution.factor, S.resolution._factor + S.resolution.factor/S.resolution.steps);
-				window.setTimeout(render,1);
+				render.timeout = window.setTimeout(function() {
 
-			} else { render.init = false; }
+				S.resolution._factor = S.resolution.factor;
+
+				FE.Renderer.pending = true;
+				renderer.render();
+				FE.Renderer.pending = false;
+				
+			}, 100);
 		}
 
 		/* ================= */
