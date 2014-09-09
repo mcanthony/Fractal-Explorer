@@ -97,6 +97,15 @@
 
 			var success = true;
 
+			var query = window.location.search.substr(1);
+
+			if (~Object.keys(FE.Presets.presets).indexOf(query)) {
+				FE.Settings.fractal = query;
+				init(true);
+				FE.View.reset();
+				return true;
+			}
+
 			try {
 
 				FE.Settings = FE.Utils.merge(
