@@ -2,10 +2,10 @@ Fractal-Explorer
 ================
 
 A JavaScript based fractal explorer with several features.  
-**Demo: http://elias-schuett.de/git/Fractal-Explorer/**  
+**Demo: http://apps.elias.media/Fractal-Explorer/**  
 **License: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)**
 
-![](http://elias-schuett.de/img/content/fractal-explorer.png)
+![](http://elias.media/content/images/2014/09/fractal-explorer.png)
 
 ## Features  
 
